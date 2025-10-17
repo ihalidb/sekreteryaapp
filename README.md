@@ -17,11 +17,13 @@ Modern bir sekreterya yönetim sistemi. Mahalleler, komisyonlar, üyeler ve etki
 
 ## 🛠️ Teknolojiler
 
-- **Frontend**: Next.js 15, React 19, React Bootstrap
+- **Frontend**: Next.js 15, React 19
 - **Backend**: Next.js API Routes
 - **Database**: PostgreSQL
 - **ORM**: Prisma
-- **Styling**: Bootstrap 5, TailwindCSS
+- **State Management**: TanStack Query (React Query)
+- **Styling**: TailwindCSS
+- **Icons**: Lucide React
 
 ## 📦 Kurulum
 
@@ -36,33 +38,46 @@ Modern bir sekreterya yönetim sistemi. Mahalleler, komisyonlar, üyeler ve etki
    npm install
    ```
 
-2. **Database bağlantısını yapılandırın:**
-   `.env` dosyasında DATABASE_URL'i ayarlayın:
+2. **Çevre değişkenlerini yapılandırın:**
+   `.env.example` dosyasını `.env` olarak kopyalayın ve değerleri düzenleyin:
+   ```bash
+   cp .env.example .env
    ```
-   DATABASE_URL="postgresql://postgres:Admin123!@localhost:5432/sekreteryaapp?schema=public"
+   
+   `.env` dosyasında kendi database bilgilerinizi girin:
+   ```
+   DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
    ```
 
-3. **Database'i oluşturun ve migrate edin:**
+3. **Prisma Client'ı oluşturun:**
+   ```bash
+   npx prisma generate
+   ```
+
+4. **Database'i oluşturun:**
    ```bash
    npx prisma db push
    ```
 
-4. **Development server'ı başlatın:**
+5. **Development server'ı başlatın:**
    ```bash
    npm run dev
    ```
 
-5. **Tarayıcıda açın:**
+6. **Tarayıcıda açın:**
    - Local: http://localhost:3000
-   - Network: http://31.40.199.71:3000
+   - Network: http://[YOUR_LOCAL_IP]:3000
 
 ## 🌐 Local Network'ten Erişim
 
 Aynı local ağda bulunan diğer bilgisayarlardan erişim için:
 
-1. **Windows Firewall kuralı eklendi** (Port 3000)
-2. **Server 0.0.0.0 adresinde dinliyor**
-3. **Erişim adresi**: `http://31.40.199.71:3000`
+1. **Firewall Ayarı**: Port 3000'i açmanız gerekebilir
+2. **Server Yapılandırması**: Uygulama 0.0.0.0 adresinde dinliyor (tüm network interface'leri)
+3. **Local IP Adresinizi Bulun**: 
+   - Windows: `ipconfig` komutu ile
+   - Linux/Mac: `ifconfig` veya `ip addr` komutu ile
+4. **Erişim**: `http://[YOUR_LOCAL_IP]:3000` adresini kullanın
 
 Diğer bilgisayarlardan bu adresi kullanarak uygulamaya erişebilirsiniz.
 
@@ -198,12 +213,14 @@ Diğer bilgisayarlardan bu adresi kullanarak uygulamaya erişebilirsiniz.
 ## 🎨 UI/UX Özellikleri
 
 - **Responsive Design**: Tüm cihazlarda uyumlu
-- **Bootstrap 5**: Modern ve kullanıcı dostu arayüz
+- **TailwindCSS**: Modern ve özelleştirilebilir arayüz
+- **Dark/Light Theme**: Otomatik tema desteği
 - **Modal Forms**: Hızlı veri girişi
 - **Real-time Validation**: Anlık form doğrulama
-- **Success/Error Messages**: Kullanıcı geri bildirimleri
-- **Loading States**: İşlem durumu göstergeleri
+- **Success/Error Notifications**: Kullanıcı geri bildirimleri
+- **Loading States**: İşlem durumu göstergeleri ve skeleton screens
 - **Badge System**: Görsel veri gösterimi
+- **Icon Library**: Lucide React ile modern ikonlar
 
 ## 🔧 Geliştirme
 
@@ -230,10 +247,12 @@ Bu proje özel kullanım içindir.
 
 ## 👨‍💻 Geliştirici Notları
 
-- Login sistemi henüz eklenmedi (test kolaylığı için)
-- Tüm işlemler client-side ve server-side validation ile korunuyor
+- Login/Authenticate sistemi henüz eklenmedi (geliştirme kolaylığı için)
+- Tüm API endpoint'leri client-side ve server-side validation ile korunuyor
 - Cascade delete aktif, ilişkili veriler otomatik siliniyor
-- Bootstrap ve Tailwind birlikte kullanılıyor
+- TanStack Query (React Query) ile efficient data fetching ve caching
+- Next.js 15'in App Router yapısı kullanılıyor
+- Prisma ORM ile type-safe database işlemleri
 
 ---
 
