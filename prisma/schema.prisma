@@ -1,0 +1,152 @@
+ // This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Mahalle {
+  id              Int           @id @default(autoincrement())
+  ad              String
+  aciklama        String?
+  lokalYeri       String?
+  mahalleBaskanId Int?          @unique
+  mahalleBaskan   Uye?          @relation("MahalleBaskan", fields: [mahalleBaskanId], references: [id], onDelete: SetNull)
+  sorumluUyeler   UyeMahalle[]
+  createdBy       Int?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("mahalleler")
+}
+
+model IlceGorev {
+  id        Int       @id @default(autoincrement())
+  ad        String    @unique
+  aciklama  String?
+  sira      Int       @default(0)
+  uyeler    Uye[]
+  createdBy Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("ilce_gorevler")
+}
+
+model Uye {
+  id               Int               @id @default(autoincrement())
+  ad               String
+  soyad            String
+  telefon          String?
+  email            String?
+  adres            String?
+  ilceGorevId      Int?
+  ilceGorev        IlceGorev?        @relation(fields: [ilceGorevId], references: [id], onDelete: SetNull)
+  komisyonlar      UyeKomisyon[]
+  sorumluMahalleler UyeMahalle[]
+  yoklamalar       EtkinlikYoklama[]
+  mahalleBaskanlik Mahalle?          @relation("MahalleBaskan")
+  createdBy        Int?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([ilceGorevId])
+  @@index([ad, soyad])
+  @@map("uyeler")
+}
+
+model UyeKomisyon {
+  id          Int       @id @default(autoincrement())
+  uyeId       Int
+  komisyonId  Int
+  gorev       String?
+  uye         Uye       @relation(fields: [uyeId], references: [id], onDelete: Cascade)
+  komisyon    Komisyon  @relation(fields: [komisyonId], references: [id], onDelete: Cascade)
+  createdBy   Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([uyeId, komisyonId])
+  @@map("uye_komisyon")
+}
+
+model UyeMahalle {
+  id         Int      @id @default(autoincrement())
+  uyeId      Int
+  mahalleId  Int
+  uye        Uye      @relation(fields: [uyeId], references: [id], onDelete: Cascade)
+  mahalle    Mahalle  @relation(fields: [mahalleId], references: [id], onDelete: Cascade)
+  createdBy  Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([uyeId, mahalleId])
+  @@map("uye_mahalle")
+}
+
+model Etkinlik {
+  id                    Int               @id @default(autoincrement())
+  ad                    String
+  aciklama              String?
+  tarih                 DateTime
+  konum                 String?
+  zorunlu               Boolean           @default(true) // Zorunlu etkinlik mi?
+  yoklamalar            EtkinlikYoklama[]
+  komisyonlar           EtkinlikKomisyon[]
+  ilceYonetimKuruluEkle Boolean           @default(false) // İlçe Yönetim Kurulu üyelerini ekle
+  createdBy             Int?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  @@index([tarih])
+  @@map("etkinlikler")
+}
+
+model EtkinlikKomisyon {
+  id          Int       @id @default(autoincrement())
+  etkinlikId  Int
+  komisyonId  Int
+  etkinlik    Etkinlik  @relation(fields: [etkinlikId], references: [id], onDelete: Cascade)
+  komisyon    Komisyon  @relation(fields: [komisyonId], references: [id], onDelete: Cascade)
+  createdBy   Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([etkinlikId, komisyonId])
+  @@map("etkinlik_komisyon")
+}
+
+model Komisyon {
+  id         Int              @id @default(autoincrement())
+  ad         String
+  aciklama   String?
+  uyeler     UyeKomisyon[]
+  etkinlikler EtkinlikKomisyon[]
+  createdBy  Int?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@map("komisyonlar")
+}
+
+model EtkinlikYoklama {
+  id          Int       @id @default(autoincrement())
+  etkinlikId  Int
+  uyeId       Int
+  katildi     Boolean   @default(false)
+  notlar      String?
+  etkinlik    Etkinlik  @relation(fields: [etkinlikId], references: [id], onDelete: Cascade)
+  uye         Uye       @relation(fields: [uyeId], references: [id], onDelete: Cascade)
+  createdBy   Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([etkinlikId, uyeId])
+  @@map("etkinlik_yoklama")
+}
+
