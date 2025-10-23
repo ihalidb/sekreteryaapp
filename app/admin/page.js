@@ -1,18 +1,18 @@
 'use client';
 
-import { useUyeler, useMahalleler, useKomisyonlar, useEtkinlikler } from '../hooks/useData';
+import { useYonetimKurulu, useMahalleler, useKomisyonlar, useEtkinlikler } from '../hooks/useData';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import { Users, MapPin, Briefcase, Calendar, TrendingUp, TrendingDown, CheckCircle, XCircle } from 'lucide-react';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 
 export default function Dashboard() {
-  const { data: uyeler, isLoading: uyelerLoading } = useUyeler();
+  const { data: yonetimKurulu, isLoading: yonetimLoading } = useYonetimKurulu();
   const { data: mahalleler, isLoading: mahallelerLoading } = useMahalleler();
   const { data: komisyonlar, isLoading: komisyonlarLoading } = useKomisyonlar();
   const { data: etkinlikler, isLoading: etkinliklerLoading } = useEtkinlikler();
 
-  if (uyelerLoading || mahallelerLoading || komisyonlarLoading || etkinliklerLoading) {
+  if (yonetimLoading || mahallelerLoading || komisyonlarLoading || etkinliklerLoading) {
     return (
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
@@ -37,14 +37,14 @@ export default function Dashboard() {
 
   const metrics = [
     {
-      title: 'Toplam Üye',
-      value: uyeler?.length || 0,
+      title: 'Yönetim Kurulu',
+      value: yonetimKurulu?.length || 0,
       icon: Users,
       iconColor: 'text-brand-500',
       bgColor: 'bg-brand-50 dark:bg-brand-500/10',
-      change: '+12.5%',
-      trend: 'up',
-      color: 'success'
+      change: '',
+      trend: '',
+      color: 'info'
     },
     {
       title: 'Yaklaşan Etkinlik',
@@ -222,11 +222,11 @@ export default function Dashboard() {
 
             <div className="p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Aktif Üyeler</span>
-                <Badge color="warning">{uyeler?.length || 0}</Badge>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Yönetim Kurulu</span>
+                <Badge color="warning">{yonetimKurulu?.length || 0}</Badge>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-                <div className="bg-warning-500 h-2 rounded-full" style={{ width: '92%' }}></div>
+                <div className="bg-warning-500 h-2 rounded-full" style={{ width: '100%' }}></div>
               </div>
             </div>
 

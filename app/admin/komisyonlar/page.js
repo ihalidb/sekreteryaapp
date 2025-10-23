@@ -7,11 +7,12 @@ import Button from '../../components/ui/Button';
 import { Table, TableHeader, TableHeaderCell, TableBody, TableRow, TableCell } from '../../components/ui/Table';
 import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
+import Select from '../../components/ui/Select';
 import Badge from '../../components/ui/Badge';
 import { PlusIcon, PencilIcon, TrashBinIcon, ArrowRightIcon } from '../../icons';
 import { Briefcase, Users, ArrowRight, Eye } from 'lucide-react';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
-import { useKomisyonlar, useCreateKomisyon, useUpdateKomisyon, useDeleteKomisyon } from '../../hooks/useData';
+import { useKomisyonlar, useYonetimKurulu, useCreateKomisyon, useUpdateKomisyon, useDeleteKomisyon } from '../../hooks/useData';
 import KomisyonDetayModal from '../../components/KomisyonDetayModal';
 
 export default function KomisyonlarPage() {
@@ -21,10 +22,12 @@ export default function KomisyonlarPage() {
   const [editingKomisyon, setEditingKomisyon] = useState(null);
   const [formData, setFormData] = useState({
     ad: '',
-    aciklama: ''
+    aciklama: '',
+    baskanId: ''
   });
 
   const { data: komisyonlar, isLoading: komisyonlarLoading } = useKomisyonlar();
+  const { data: yonetimKurulu, isLoading: yonetimKuruluLoading } = useYonetimKurulu();
   const createKomisyon = useCreateKomisyon();
   const updateKomisyon = useUpdateKomisyon();
   const deleteKomisyon = useDeleteKomisyon();
@@ -44,13 +47,15 @@ export default function KomisyonlarPage() {
       setEditingKomisyon(komisyon);
       setFormData({
         ad: komisyon.ad || '',
-        aciklama: komisyon.aciklama || ''
+        aciklama: komisyon.aciklama || '',
+        baskanId: komisyon.baskanId || ''
       });
     } else {
       setEditingKomisyon(null);
       setFormData({
         ad: '',
-        aciklama: ''
+        aciklama: '',
+        baskanId: ''
       });
     }
     setShowModal(true);
@@ -61,7 +66,8 @@ export default function KomisyonlarPage() {
     setEditingKomisyon(null);
     setFormData({
       ad: '',
-      aciklama: ''
+      aciklama: '',
+      baskanId: ''
     });
   };
 
@@ -97,7 +103,7 @@ export default function KomisyonlarPage() {
     }));
   };
 
-  if (komisyonlarLoading) {
+  if (komisyonlarLoading || yonetimKuruluLoading) {
     return <LoadingSkeleton />;
   }
 
@@ -134,6 +140,7 @@ export default function KomisyonlarPage() {
             <TableHeader>
               <TableHeaderCell>Komisyon Adı</TableHeaderCell>
               <TableHeaderCell>Açıklama</TableHeaderCell>
+              <TableHeaderCell>Başkan</TableHeaderCell>
               <TableHeaderCell>Üye Sayısı</TableHeaderCell>
               <TableHeaderCell>İşlemler</TableHeaderCell>
             </TableHeader>
@@ -155,6 +162,15 @@ export default function KomisyonlarPage() {
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {komisyon.aciklama || '-'}
                     </p>
+                  </TableCell>
+                  <TableCell>
+                    {komisyon.baskan ? (
+                      <Badge color="success">
+                        {komisyon.baskan.ad} {komisyon.baskan.soyad}
+                      </Badge>
+                    ) : (
+                      <span className="text-sm text-gray-400">Atanmamış</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Badge color="brand">
@@ -239,11 +255,21 @@ export default function KomisyonlarPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                <Badge color="brand">
-                  {komisyon.uyeler?.length || 0} Üye
-                </Badge>
+              <div className="space-y-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                {komisyon.baskan && (
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    <Badge color="success" className="text-xs">
+                      Başkan: {komisyon.baskan.ad} {komisyon.baskan.soyad}
+                    </Badge>
+                  </div>
+                )}
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                  <Badge color="brand">
+                    {komisyon.uyeler?.length || 0} Üye
+                  </Badge>
+                </div>
               </div>
             </div>
           ))}
@@ -264,6 +290,20 @@ export default function KomisyonlarPage() {
             onChange={handleInputChange}
             required
           />
+
+          <Select
+            label="Komisyon Başkanı"
+            name="baskanId"
+            value={formData.baskanId}
+            onChange={handleInputChange}
+          >
+            <option value="">Başkan Seçin (Opsiyonel)</option>
+            {yonetimKurulu?.map((uye) => (
+              <option key={uye.id} value={uye.id}>
+                {uye.ad} {uye.soyad} - {uye.ilceGorev?.ad || 'Görev Yok'}
+              </option>
+            ))}
+          </Select>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

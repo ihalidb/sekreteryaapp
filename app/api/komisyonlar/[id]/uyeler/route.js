@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../../../lib/prisma';
+import { prisma } from '../../../../../lib/prisma.js';
 
 // Komisyona üye ekle veya görevini güncelle
 export async function POST(request, { params }) {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../../lib/prisma';
+import { prisma } from '../../../../lib/prisma.js';
 
 export async function GET(request, { params }) {
   try {
@@ -8,6 +8,7 @@ export async function GET(request, { params }) {
     const komisyon = await prisma.komisyon.findUnique({
       where: { id },
       include: {
+        baskan: true,
         uyeler: {
           include: {
             uye: {
@@ -57,7 +58,7 @@ export async function PUT(request, { params }) {
     const { id: paramId } = await params;
     const id = parseInt(paramId);
     const body = await request.json();
-    const { ad, aciklama } = body;
+    const { ad, aciklama, baskanId } = body;
 
     if (!ad || ad.trim() === '') {
       return NextResponse.json({ error: 'Komisyon adı gereklidir' }, { status: 400 });
@@ -68,6 +69,10 @@ export async function PUT(request, { params }) {
       data: {
         ad: ad.trim(),
         aciklama: aciklama?.trim() || null,
+        baskanId: baskanId ? parseInt(baskanId) : null,
+      },
+      include: {
+        baskan: true,
       },
     });
 

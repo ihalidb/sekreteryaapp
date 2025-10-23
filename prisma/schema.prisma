@@ -11,29 +11,32 @@ datasource db {
 }
 
 model Mahalle {
-  id              Int           @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
   ad              String
   aciklama        String?
   lokalYeri       String?
-  mahalleBaskanId Int?          @unique
-  mahalleBaskan   Uye?          @relation("MahalleBaskan", fields: [mahalleBaskanId], references: [id], onDelete: SetNull)
+  mahalleBaskanId Int?           @unique
+  mahalleBaskan   Uye?           @relation("MahalleBaskan", fields: [mahalleBaskanId], references: [id], onDelete: SetNull)
+  mahalleBaskanDetay MahalleBaskan? @relation("MahalleBaskanDetay")
   sorumluUyeler   UyeMahalle[]
+  sorumluYonetimKurulu YonetimKuruluMahalle[] @relation("YonetimKuruluSorumlu")
   createdBy       Int?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   @@map("mahalleler")
 }
 
 model IlceGorev {
-  id        Int       @id @default(autoincrement())
-  ad        String    @unique
-  aciklama  String?
-  sira      Int       @default(0)
-  uyeler    Uye[]
-  createdBy Int?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id                    Int                    @id @default(autoincrement())
+  ad                    String                 @unique
+  aciklama              String?
+  sira                  Int                    @default(0)
+  uyeler                Uye[]
+  yonetimKuruluUyeleri  YonetimKuruluUyesi[]   @relation("YonetimKuruluIlceGorev")
+  createdBy             Int?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 
   @@map("ilce_gorevler")
 }
@@ -125,12 +128,15 @@ model Komisyon {
   id         Int              @id @default(autoincrement())
   ad         String
   aciklama   String?
+  baskanId   Int?
+  baskan     YonetimKuruluUyesi? @relation("KomisyonBaskan", fields: [baskanId], references: [id], onDelete: SetNull)
   uyeler     UyeKomisyon[]
   etkinlikler EtkinlikKomisyon[]
   createdBy  Int?
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
 
+  @@index([baskanId])
   @@map("komisyonlar")
 }
 
@@ -148,5 +154,76 @@ model EtkinlikYoklama {
 
   @@unique([etkinlikId, uyeId])
   @@map("etkinlik_yoklama")
+}
+
+model YonetimKuruluUyesi {
+  id               Int                    @id @default(autoincrement())
+  ad               String
+  soyad            String
+  ilceGorevId      Int?
+  ilceGorev        IlceGorev?             @relation("YonetimKuruluIlceGorev", fields: [ilceGorevId], references: [id], onDelete: SetNull)
+  telefon          String?
+  email            String?
+  adres            String?
+  sira             Int                    @default(0) // Gösterim sırası
+  sorumluMahalleler YonetimKuruluMahalle[]
+  komisyonlar      Komisyon[]             @relation("KomisyonBaskan")
+  createdBy        Int?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  @@index([sira])
+  @@index([ilceGorevId])
+  @@map("yonetim_kurulu_uyeleri")
+}
+
+model YonetimKuruluMahalle {
+  id                    Int                @id @default(autoincrement())
+  yonetimKuruluUyesiId  Int
+  yonetimKuruluUyesi    YonetimKuruluUyesi @relation(fields: [yonetimKuruluUyesiId], references: [id], onDelete: Cascade)
+  mahalleId             Int
+  mahalle               Mahalle            @relation("YonetimKuruluSorumlu", fields: [mahalleId], references: [id], onDelete: Cascade)
+  createdAt             DateTime           @default(now())
+
+  @@unique([yonetimKuruluUyesiId, mahalleId])
+  @@index([yonetimKuruluUyesiId])
+  @@index([mahalleId])
+  @@map("yonetim_kurulu_mahalle")
+}
+
+model MahalleBaskan {
+  id         Int      @id @default(autoincrement())
+  ad         String
+  soyad      String
+  mahalleId  Int      @unique
+  mahalle    Mahalle  @relation("MahalleBaskanDetay", fields: [mahalleId], references: [id], onDelete: Cascade)
+  telefon    String?
+  email      String?
+  adres      String?
+  createdBy  Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([mahalleId])
+  @@map("mahalle_baskanlari")
+}
+
+model Admin {
+  id             Int      @id @default(autoincrement())
+  username       String   @unique
+  password       String
+  name           String?
+  email          String?
+  active         Boolean  @default(true)
+  role           String   @default("admin")
+  sessionToken   String?  @unique
+  sessionExpiry  DateTime?
+  lastLogin      DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([username])
+  @@index([sessionToken])
+  @@map("admins")
 }
 

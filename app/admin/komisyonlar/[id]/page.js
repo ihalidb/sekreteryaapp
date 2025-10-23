@@ -13,7 +13,7 @@ import Badge from '../../../components/ui/Badge';
 import { PlusIcon, PencilIcon, TrashBinIcon, ArrowRightIcon } from '../../../icons';
 import { User, Briefcase, Users, ArrowLeft, Calendar, UserCheck, Phone, Mail, MapPin } from 'lucide-react';
 import LoadingSkeleton from '../../../components/LoadingSkeleton';
-import { useKomisyonDetay, useUyeler, useAddUyeToKomisyon, useUpdateUyeKomisyon, useRemoveUyeFromKomisyon } from '../../../hooks/useData';
+import { useKomisyonDetay } from '../../../hooks/useData';
 
 export default function KomisyonDetayPage({ params }) {
   const router = useRouter();
@@ -28,10 +28,11 @@ export default function KomisyonDetayPage({ params }) {
   });
 
   const { data: komisyon, isLoading: komisyonLoading } = useKomisyonDetay(komisyonId);
-  const { data: uyeler, isLoading: uyelerLoading } = useUyeler();
-  const addUye = useAddUyeToKomisyon();
-  const updateUye = useUpdateUyeKomisyon();
-  const removeUye = useRemoveUyeFromKomisyon();
+  // NOT: Üye tablosu kaldırıldı - komisyon üye yönetimi devre dışı
+  // const { data: uyeler, isLoading: uyelerLoading } = useUyeler();
+  // const addUye = useAddUyeToKomisyon();
+  // const updateUye = useUpdateUyeKomisyon();
+  // const removeUye = useRemoveUyeFromKomisyon();
 
   const handleBackClick = () => {
     router.back();
@@ -103,13 +104,9 @@ export default function KomisyonDetayPage({ params }) {
     }));
   };
 
-  if (komisyonLoading || uyelerLoading) {
+  if (komisyonLoading) {
     return <LoadingSkeleton />;
   }
-
-  const availableUyeler = uyeler?.filter(
-    uye => !komisyon?.uyeler?.some(uk => uk.uyeId === uye.id)
-  );
 
   return (
     <>
@@ -151,10 +148,11 @@ export default function KomisyonDetayPage({ params }) {
               Toplam {komisyon?.uyeler?.length || 0} üye
             </p>
           </div>
-          <Button onClick={() => handleOpenAddModal()}>
-            <PlusIcon className="w-4 h-4 mr-2" />
-            Üye Ekle
-          </Button>
+          <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p className="text-xs text-blue-700 dark:text-blue-400">
+              ℹ️ Üye yönetimi devre dışı
+            </p>
+          </div>
         </div>
 
         {/* Desktop Table View */}
@@ -212,21 +210,8 @@ export default function KomisyonDetayPage({ params }) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleOpenAddModal(uyeKomisyon)}
-                      >
-                        <PencilIcon className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemove(uyeKomisyon.id)}
-                      >
-                        <TrashBinIcon className="w-4 h-4" />
-                      </Button>
+                    <div className="text-xs text-gray-400">
+                      -
                     </div>
                   </TableCell>
                 </TableRow>
@@ -265,22 +250,7 @@ export default function KomisyonDetayPage({ params }) {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleOpenAddModal(uyeKomisyon)}
-                  >
-                    <PencilIcon className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemove(uyeKomisyon.id)}
-                  >
-                    <TrashBinIcon className="w-4 h-4" />
-                  </Button>
-                </div>
+                {/* Üye yönetimi devre dışı */}
               </div>
 
               <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
@@ -383,52 +353,8 @@ export default function KomisyonDetayPage({ params }) {
         )}
       </Card>
 
-      <Modal
-        isOpen={showAddModal}
-        onClose={handleCloseAddModal}
-        title={editingUyeKomisyon ? 'Üye Görevini Düzenle' : 'Komisyona Üye Ekle'}
-        size="lg"
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!editingUyeKomisyon && (
-            <Select
-              label="Üye Seçin"
-              name="uyeId"
-              value={formData.uyeId}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="">Üye Seçin</option>
-              {availableUyeler?.map((uye) => (
-                <option key={uye.id} value={uye.id}>
-                  {uye.ad} {uye.soyad} {uye.ilceGorev ? `(${uye.ilceGorev.ad})` : ''}
-                </option>
-              ))}
-            </Select>
-          )}
-
-          <Input
-            label="Komisyon Görevi"
-            name="gorev"
-            value={formData.gorev}
-            onChange={handleInputChange}
-            placeholder="Örn: Başkan, Üye, Sekreter"
-          />
-
-          <div className="flex items-center justify-end gap-3 pt-4">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={handleCloseAddModal}
-            >
-              İptal
-            </Button>
-            <Button type="submit">
-              {editingUyeKomisyon ? 'Güncelle' : 'Ekle'}
-            </Button>
-          </div>
-        </form>
-      </Modal>
+      {/* NOT: Üye yönetimi devre dışı - Modal yoruma alındı */}
+      {/* <Modal>...</Modal> */}
     </>
   );
 }

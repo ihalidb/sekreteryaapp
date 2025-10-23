@@ -20,23 +20,6 @@ const apiCall = async (url, options = {}) => {
 };
 
 // Custom hooks for data fetching
-export const useUyeler = () => {
-  return useQuery({
-    queryKey: ['uyeler'],
-    queryFn: () => apiCall('/api/uyeler'),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-export const useUyeDetay = (uyeId) => {
-  return useQuery({
-    queryKey: ['uye', uyeId],
-    queryFn: () => apiCall(`/api/uyeler/${uyeId}`),
-    enabled: !!uyeId,
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  });
-};
-
 export const useMahalleler = () => {
   return useQuery({
     queryKey: ['mahalleler'],
@@ -71,46 +54,6 @@ export const useIlceGorevler = () => {
 
 
 // Mutation hooks for data updates
-export const useCreateUye = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: (data) => apiCall('/api/uyeler', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['uyeler']);
-    },
-  });
-};
-
-export const useUpdateUye = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: ({ id, ...data }) => apiCall(`/api/uyeler/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['uyeler']);
-    },
-  });
-};
-
-export const useDeleteUye = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: (id) => apiCall(`/api/uyeler/${id}`, {
-      method: 'DELETE',
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['uyeler']);
-    },
-  });
-};
 
 // Mahalleler mutations
 export const useCreateMahalle = () => {
@@ -148,7 +91,8 @@ export const useDeleteMahalle = () => {
     mutationFn: (id) => apiCall(`/api/mahalleler/${id}`, {
       method: 'DELETE',
     }),
-    onSuccess: () => {
+    onSuccess: (_, deletedId) => {
+      queryClient.removeQueries(['mahalle', deletedId]);
       queryClient.invalidateQueries(['mahalleler']);
     },
   });
@@ -190,7 +134,8 @@ export const useDeleteKomisyon = () => {
     mutationFn: (id) => apiCall(`/api/komisyonlar/${id}`, {
       method: 'DELETE',
     }),
-    onSuccess: () => {
+    onSuccess: (_, deletedId) => {
+      queryClient.removeQueries(['komisyon', deletedId]);
       queryClient.invalidateQueries(['komisyonlar']);
     },
   });
@@ -232,7 +177,8 @@ export const useDeleteEtkinlik = () => {
     mutationFn: (id) => apiCall(`/api/etkinlikler/${id}`, {
       method: 'DELETE',
     }),
-    onSuccess: () => {
+    onSuccess: (_, deletedId) => {
+      queryClient.removeQueries(['etkinlik', deletedId]);
       queryClient.invalidateQueries(['etkinlikler']);
     },
   });
@@ -274,7 +220,8 @@ export const useDeleteIlceGorev = () => {
     mutationFn: (id) => apiCall(`/api/ilce-gorevler/${id}`, {
       method: 'DELETE',
     }),
-    onSuccess: () => {
+    onSuccess: (_, deletedId) => {
+      queryClient.removeQueries(['ilce-gorev', deletedId]);
       queryClient.invalidateQueries(['ilce-gorevler']);
     },
   });
@@ -303,46 +250,107 @@ export const useKomisyonDetay = (id) => {
   });
 };
 
-export const useAddUyeToKomisyon = () => {
+// NOT: Üye tablosu kaldırıldı, komisyon üye yönetimi artık kullanılmıyor
+// Yönetim Kurulu veya Mahalle Başkanları üzerinden yönetilmeli
+
+// Yönetim Kurulu hooks
+export const useYonetimKurulu = () => {
+  return useQuery({
+    queryKey: ['yonetim-kurulu'],
+    queryFn: () => apiCall('/api/yonetim-kurulu'),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useCreateYonetimKuruluUyesi = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ komisyonId, uyeId, gorev }) => apiCall(`/api/komisyonlar/${komisyonId}/uyeler`, {
+    mutationFn: (data) => apiCall('/api/yonetim-kurulu', {
       method: 'POST',
-      body: JSON.stringify({ uyeId, gorev }),
+      body: JSON.stringify(data),
     }),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(['komisyon', variables.komisyonId]);
-      queryClient.invalidateQueries(['komisyonlar']);
+    onSuccess: () => {
+      queryClient.invalidateQueries(['yonetim-kurulu']);
     },
   });
 };
 
-export const useUpdateUyeKomisyon = () => {
+export const useUpdateYonetimKuruluUyesi = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ komisyonId, uyeKomisyonId, gorev }) => apiCall(`/api/komisyonlar/${komisyonId}/uyeler`, {
+    mutationFn: ({ id, ...data }) => apiCall(`/api/yonetim-kurulu/${id}`, {
       method: 'PUT',
-      body: JSON.stringify({ uyeKomisyonId, gorev }),
+      body: JSON.stringify(data),
     }),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(['komisyon', variables.komisyonId]);
-      queryClient.invalidateQueries(['komisyonlar']);
+    onSuccess: () => {
+      queryClient.invalidateQueries(['yonetim-kurulu']);
     },
   });
 };
 
-export const useRemoveUyeFromKomisyon = () => {
+export const useDeleteYonetimKuruluUyesi = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ komisyonId, uyeKomisyonId }) => apiCall(`/api/komisyonlar/${komisyonId}/uyeler?uyeKomisyonId=${uyeKomisyonId}`, {
+    mutationFn: (id) => apiCall(`/api/yonetim-kurulu/${id}`, {
       method: 'DELETE',
     }),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(['komisyon', variables.komisyonId]);
-      queryClient.invalidateQueries(['komisyonlar']);
+    onSuccess: (_, deletedId) => {
+      queryClient.removeQueries(['yonetim-kurulu-uye', deletedId]);
+      queryClient.invalidateQueries(['yonetim-kurulu']);
+    },
+  });
+};
+
+// Mahalle Başkanları hooks
+export const useMahalleBaskanlar = () => {
+  return useQuery({
+    queryKey: ['mahalle-baskanlari'],
+    queryFn: () => apiCall('/api/mahalle-baskanlari'),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useCreateMahalleBaskan = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (data) => apiCall('/api/mahalle-baskanlari', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['mahalle-baskanlari']);
+    },
+  });
+};
+
+export const useUpdateMahalleBaskan = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ id, ...data }) => apiCall(`/api/mahalle-baskanlari/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['mahalle-baskanlari']);
+    },
+  });
+};
+
+export const useDeleteMahalleBaskan = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (id) => apiCall(`/api/mahalle-baskanlari/${id}`, {
+      method: 'DELETE',
+    }),
+    onSuccess: (_, deletedId) => {
+      queryClient.removeQueries(['mahalle-baskan', deletedId]);
+      queryClient.invalidateQueries(['mahalle-baskanlari']);
     },
   });
 };

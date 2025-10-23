@@ -17,7 +17,7 @@ import {
   HorizontaLDots,
   GroupIcon,
 } from '../icons';
-import { ClipboardCheck } from 'lucide-react';
+import { ClipboardCheck, Users2, MapPinned, ChevronRight } from 'lucide-react';
 
 const AppSidebar = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered, setIsMobileOpen } = useSidebar();
@@ -25,7 +25,10 @@ const AppSidebar = () => {
 
   const [openSubmenu, setOpenSubmenu] = useState(null);
 
-  const isActive = useCallback((path) => pathname === path, [pathname]);
+  const isActive = useCallback((path) => {
+    if (!path) return false;
+    return pathname === path;
+  }, [pathname]);
 
   const handleLinkClick = () => {
     // Mobilde sidebar'ı kapat
@@ -54,6 +57,22 @@ const AppSidebar = () => {
       icon: <ListIcon />,
       name: "Üyeler",
       path: "/admin/uyeler",
+    },
+    {
+      icon: <Users2 className="w-6 h-6" />,
+      name: "Yönetim",
+      submenu: [
+        {
+          icon: <Users2 className="w-5 h-5" />,
+          name: "Yönetim Kurulu",
+          path: "/admin/yonetim-kurulu",
+        },
+        {
+          icon: <MapPinned className="w-5 h-5" />,
+          name: "Mahalle Başkanları",
+          path: "/admin/mahalle-baskanlari",
+        },
+      ],
     },
     {
       icon: <TableIcon />,
@@ -137,27 +156,87 @@ const AppSidebar = () => {
               <ul className="flex flex-col gap-4">
                 {navItems.map((nav, index) => (
                   <li key={nav.name}>
-                         <Link
-                           href={nav.path}
-                           onClick={handleLinkClick}
-                           prefetch={true}
-                           className={`menu-item group ${
-                             isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
-                           }`}
-                         >
-                      <span
-                        className={`menu-item-icon-size ${
-                          isActive(nav.path)
-                            ? "menu-item-icon-active"
-                            : "menu-item-icon-inactive"
+                    {nav.submenu ? (
+                      // Submenu item
+                      <div>
+                        <button
+                          onClick={() => handleSubmenuToggle(index)}
+                          className={`menu-item group w-full ${
+                            openSubmenu === index ? "menu-item-active" : "menu-item-inactive"
+                          }`}
+                        >
+                          <span
+                            className={`menu-item-icon-size ${
+                              openSubmenu === index
+                                ? "menu-item-icon-active"
+                                : "menu-item-icon-inactive"
+                            }`}
+                          >
+                            {nav.icon}
+                          </span>
+                          {(isExpanded || isHovered || isMobileOpen) && (
+                            <>
+                              <span className="menu-item-text flex-1">{nav.name}</span>
+                              <ChevronRight
+                                className={`w-4 h-4 transition-transform duration-200 ${
+                                  openSubmenu === index ? "rotate-90" : ""
+                                }`}
+                              />
+                            </>
+                          )}
+                        </button>
+                        
+                        {/* Submenu items */}
+                        {(isExpanded || isHovered || isMobileOpen) && openSubmenu === index && (
+                          <ul className="mt-2 ml-4 flex flex-col gap-2 border-l-2 border-gray-200 dark:border-gray-700 pl-4">
+                            {nav.submenu.map((subItem) => (
+                              <li key={subItem.path}>
+                                <Link
+                                  href={subItem.path}
+                                  onClick={handleLinkClick}
+                                  prefetch={true}
+                                  className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-150 ${
+                                    isActive(subItem.path)
+                                      ? "bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400"
+                                      : "text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800/50"
+                                  }`}
+                                >
+                                  <span className={`${
+                                    isActive(subItem.path) ? "text-orange-600 dark:text-orange-400" : ""
+                                  }`}>
+                                    {subItem.icon}
+                                  </span>
+                                  <span className="text-sm font-medium">{subItem.name}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ) : nav.path ? (
+                      // Regular item
+                      <Link
+                        href={nav.path}
+                        onClick={handleLinkClick}
+                        prefetch={true}
+                        className={`menu-item group ${
+                          isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                         }`}
                       >
-                        {nav.icon}
-                      </span>
-                      {(isExpanded || isHovered || isMobileOpen) && (
-                        <span className="menu-item-text">{nav.name}</span>
-                      )}
-                    </Link>
+                        <span
+                          className={`menu-item-icon-size ${
+                            isActive(nav.path)
+                              ? "menu-item-icon-active"
+                              : "menu-item-icon-inactive"
+                          }`}
+                        >
+                          {nav.icon}
+                        </span>
+                        {(isExpanded || isHovered || isMobileOpen) && (
+                          <span className="menu-item-text">{nav.name}</span>
+                        )}
+                      </Link>
+                    ) : null}
                   </li>
                 ))}
               </ul>

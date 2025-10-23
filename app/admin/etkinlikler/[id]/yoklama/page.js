@@ -70,8 +70,9 @@ export default function YoklamaPage() {
 
   useEffect(() => {
     if (etkinlikId) {
-    fetchData();
+      fetchData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [etkinlikId]);
 
   const handleStatusChange = async (uyeId, durum, uyeAd = '') => {

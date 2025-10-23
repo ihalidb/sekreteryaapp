@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../../lib/prisma';
+import { prisma } from '../../../../lib/prisma.js';
 
 export async function GET(request, { params }) {
   try {
@@ -9,9 +9,15 @@ export async function GET(request, { params }) {
       where: { id },
       include: {
         mahalleBaskan: true,
+        mahalleBaskanDetay: true,
         sorumluUyeler: {
           include: {
             uye: true,
+          },
+        },
+        sorumluYonetimKurulu: {
+          include: {
+            yonetimKuruluUyesi: true,
           },
         },
       },
@@ -49,6 +55,7 @@ export async function PUT(request, { params }) {
       },
       include: {
         mahalleBaskan: true,
+        mahalleBaskanDetay: true,
       },
     });
 

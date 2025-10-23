@@ -20,7 +20,18 @@ const nextConfig = {
   // Prefetch optimizasyonu
   reactStrictMode: true,
   // Cross-origin uyarısını kaldır
-  allowedDevOrigins: ['31.40.199.71'],
+  allowedDevOrigins: ['31.40.199.71', '192.168.1.133'],
+  // WebSocket ayarları (network üzerinden erişim için)
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Client-side WebSocket ayarları
+      config.watchOptions = {
+        poll: 1000,
+        aggregateTimeout: 300,
+      };
+    }
+    return config;
+  },
   // Development için optimizasyonlar
   devIndicators: {
     position: 'bottom-right',

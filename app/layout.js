@@ -1,10 +1,8 @@
-import AppLayout from './layout/AppLayout';
-import './globals.css';
+'use client';
 
-export const metadata = {
-  title: 'AK Parti Fatih',
-  description: 'AK Parti Fatih İlçe Teşkilatı Yönetim Sistemi',
-};
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './lib/queryClient';
+import './globals.css';
 
 export default function RootLayout({ children }) {
   return (
@@ -12,11 +10,12 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" type="image/png" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sekreterya App</title>
       </head>
       <body className="dark:bg-gray-900">
-        <AppLayout>
+        <QueryClientProvider client={queryClient}>
           {children}
-        </AppLayout>
+        </QueryClientProvider>
       </body>
     </html>
   );

@@ -1,14 +1,20 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../lib/prisma';
+import { prisma } from '../../../lib/prisma.js';
 
 export async function GET() {
   try {
     const mahalleler = await prisma.mahalle.findMany({
       include: {
         mahalleBaskan: true,
+        mahalleBaskanDetay: true,
         sorumluUyeler: {
           include: {
             uye: true,
+          },
+        },
+        sorumluYonetimKurulu: {
+          include: {
+            yonetimKuruluUyesi: true,
           },
         },
       },
@@ -41,6 +47,7 @@ export async function POST(request) {
       },
       include: {
         mahalleBaskan: true,
+        mahalleBaskanDetay: true,
       },
     });
 

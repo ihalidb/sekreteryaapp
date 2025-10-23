@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../../../lib/prisma';
+import { prisma } from '../../../../../lib/prisma.js';
 
 // Etkinliğe kayıtlı tüm üyeleri ve yoklama durumlarını getir
 export async function GET(request, { params }) {

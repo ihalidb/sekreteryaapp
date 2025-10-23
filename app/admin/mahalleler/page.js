@@ -11,7 +11,7 @@ import Badge from '../../components/ui/Badge';
 import { PlusIcon, PencilIcon, TrashBinIcon } from '../../icons';
 import { MapPin, User, Users } from 'lucide-react';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
-import { useMahalleler, useUyeler, useCreateMahalle, useUpdateMahalle, useDeleteMahalle } from '../../hooks/useData';
+import { useMahalleler, useCreateMahalle, useUpdateMahalle, useDeleteMahalle } from '../../hooks/useData';
 
 export default function MahallelerPage() {
   const [showModal, setShowModal] = useState(false);
@@ -19,12 +19,10 @@ export default function MahallelerPage() {
   const [formData, setFormData] = useState({
     ad: '',
     aciklama: '',
-    lokalYeri: '',
-    mahalleBaskanId: ''
+    lokalYeri: ''
   });
 
   const { data: mahalleler, isLoading: mahallelerLoading } = useMahalleler();
-  const { data: uyeler, isLoading: uyelerLoading } = useUyeler();
   const createMahalle = useCreateMahalle();
   const updateMahalle = useUpdateMahalle();
   const deleteMahalle = useDeleteMahalle();
@@ -35,16 +33,14 @@ export default function MahallelerPage() {
       setFormData({
         ad: mahalle.ad || '',
         aciklama: mahalle.aciklama || '',
-        lokalYeri: mahalle.lokalYeri || '',
-        mahalleBaskanId: mahalle.mahalleBaskanId || ''
+        lokalYeri: mahalle.lokalYeri || ''
       });
     } else {
       setEditingMahalle(null);
       setFormData({
         ad: '',
         aciklama: '',
-        lokalYeri: '',
-        mahalleBaskanId: ''
+        lokalYeri: ''
       });
     }
     setShowModal(true);
@@ -56,8 +52,7 @@ export default function MahallelerPage() {
     setFormData({
       ad: '',
       aciklama: '',
-      lokalYeri: '',
-      mahalleBaskanId: ''
+      lokalYeri: ''
     });
   };
 
@@ -93,7 +88,7 @@ export default function MahallelerPage() {
     }));
   };
 
-  if (mahallelerLoading || uyelerLoading) {
+  if (mahallelerLoading) {
     return <LoadingSkeleton />;
   }
 
@@ -156,9 +151,9 @@ export default function MahallelerPage() {
                     </p>
                   </TableCell>
                   <TableCell>
-                    {mahalle.mahalleBaskan ? (
+                    {mahalle.mahalleBaskanDetay ? (
                       <Badge color="brand">
-                        {mahalle.mahalleBaskan.ad} {mahalle.mahalleBaskan.soyad}
+                        {mahalle.mahalleBaskanDetay.ad} {mahalle.mahalleBaskanDetay.soyad}
                       </Badge>
                     ) : (
                       <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -250,11 +245,11 @@ export default function MahallelerPage() {
                     <span>{mahalle.lokalYeri}</span>
                   </div>
                 )}
-                {mahalle.mahalleBaskan && (
+                {mahalle.mahalleBaskanDetay && (
                   <div className="flex items-center gap-2 text-sm">
                     <User className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                     <Badge color="brand">
-                      Başkan: {mahalle.mahalleBaskan.ad} {mahalle.mahalleBaskan.soyad}
+                      Başkan: {mahalle.mahalleBaskanDetay.ad} {mahalle.mahalleBaskanDetay.soyad}
                     </Badge>
                   </div>
                 )}
@@ -311,19 +306,11 @@ export default function MahallelerPage() {
             onChange={handleInputChange}
           />
 
-          <Select
-            label="Mahalle Başkanı"
-            name="mahalleBaskanId"
-            value={formData.mahalleBaskanId}
-            onChange={handleInputChange}
-          >
-            <option value="">Başkan Seçin</option>
-            {uyeler?.map((uye) => (
-              <option key={uye.id} value={uye.id}>
-                {uye.ad} {uye.soyad}
-              </option>
-            ))}
-          </Select>
+          <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p className="text-sm text-blue-700 dark:text-blue-400">
+              💡 Mahalle başkanı ataması için &quot;İlçe Teşkilatı → Mahalle Başkanları&quot; menüsünü kullanın.
+            </p>
+          </div>
 
           <div className="flex items-center justify-end gap-3 pt-4">
             <Button

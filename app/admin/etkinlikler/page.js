@@ -11,7 +11,7 @@ import Badge from '../../components/ui/Badge';
 import { PlusIcon, PencilIcon, TrashBinIcon, ArrowRightIcon } from '../../icons';
 import { Calendar, MapPin, Users, Briefcase, ArrowRight, Building2, Info } from 'lucide-react';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
-import { useEtkinlikler, useKomisyonlar, useUyeler, useCreateEtkinlik, useUpdateEtkinlik, useDeleteEtkinlik } from '../../hooks/useData';
+import { useEtkinlikler, useKomisyonlar, useYonetimKurulu, useCreateEtkinlik, useUpdateEtkinlik, useDeleteEtkinlik } from '../../hooks/useData';
 
 export default function EtkinliklerPage() {
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +28,7 @@ export default function EtkinliklerPage() {
 
   const { data: etkinlikler, isLoading } = useEtkinlikler();
   const { data: komisyonlar, isLoading: komisyonlarLoading } = useKomisyonlar();
-  const { data: uyeler } = useUyeler();
+  const { data: yonetimKurulu } = useYonetimKurulu();
   const createEtkinlik = useCreateEtkinlik();
   const updateEtkinlik = useUpdateEtkinlik();
   const deleteEtkinlik = useDeleteEtkinlik();
@@ -87,9 +87,7 @@ export default function EtkinliklerPage() {
   };
 
   // İlçe Yönetim Kurulu üye sayısını hesapla
-  const ilceYonetimKuruluCount = uyeler?.filter(uye => 
-    ['İlçe Başkanı', 'Yürütme Kurulu', 'Yönetim Kurulu'].includes(uye.ilceGorev?.ad)
-  ).length || 0;
+  const ilceYonetimKuruluCount = yonetimKurulu?.length || 0;
 
   const handleKomisyonChange = (e) => {
     const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);

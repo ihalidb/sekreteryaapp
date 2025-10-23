@@ -1,0 +1,23 @@
+#!/bin/bash
+# Yararlı veritabanı komutları
+
+echo "=== SEKRETERYAapp Veritabanı Komutları ==="
+echo ""
+echo "1. Tabloları listele:"
+echo "   sudo -u postgres psql -d sekreteryaapp -c '\dt'"
+echo ""
+echo "2. Tüm üyeleri göster:"
+echo "   sudo -u postgres psql -d sekreteryaapp -c 'SELECT * FROM uyeler;'"
+echo ""
+echo "3. Tüm mahalleleri göster:"
+echo "   sudo -u postgres psql -d sekreteryaapp -c 'SELECT * FROM mahalleler;'"
+echo ""
+echo "4. Tüm komisyonları göster:"
+echo "   sudo -u postgres psql -d sekreteryaapp -c 'SELECT * FROM komisyonlar;'"
+echo ""
+echo "5. İlçe görevlerini göster:"
+echo "   sudo -u postgres psql -d sekreteryaapp -c 'SELECT * FROM ilce_gorevler;'"
+echo ""
+echo "6. Veritabanına bağlan (interaktif):"
+echo "   sudo -u postgres psql -d sekreteryaapp"
+echo ""

@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../lib/prisma';
+import { prisma } from '../../../lib/prisma.js';
 import { safeParseJSON, errorResponse, successResponse } from '../../../lib/api-utils';
 
 export async function GET() {
   try {
     const komisyonlar = await prisma.komisyon.findMany({
       include: {
+        baskan: true,
         uyeler: {
           include: {
             uye: true,
@@ -26,7 +27,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await safeParseJSON(request);
-    const { ad, aciklama } = body;
+    const { ad, aciklama, baskanId } = body;
 
     if (!ad || ad.trim() === '') {
       return errorResponse('Komisyon adı gereklidir', 400);
@@ -36,6 +37,10 @@ export async function POST(request) {
       data: {
         ad: ad.trim(),
         aciklama: aciklama?.trim() || null,
+        baskanId: baskanId ? parseInt(baskanId) : null,
+      },
+      include: {
+        baskan: true,
       },
     });
 
