@@ -1,170 +1,119 @@
-# 🌐 Sekreterya App - Erişim Rehberi
+# Sekreterya App — Erişim Rehberi
 
-## ✨ HTTPS ile Güvenli Erişim (ÖNERİLEN)
+## HTTPS (önerilen)
 
-### 🔒 Güvenli Erişim (HTTPS):
 ```
 https://sekreterya.local
 ```
 
-### Neden HTTPS?
-- 🔒 Şifreli bağlantı (SSL/TLS)
-- ✅ Güvenli cookie yönetimi
-- ✅ Modern browser uyumluluğu
-- ✅ IP adresi değişse bile çalışır
-- ✅ Kolay hatırlanır
-- ✅ Profesyonel görünüm
+İlk erişimde self-signed sertifika uyarısı normaldir: **Gelişmiş → Devam**.
 
-### ⚠️ İlk Erişimde Sertifika Uyarısı:
-Self-signed sertifika kullanıldığı için tarayıcı uyarı verecek:
-- **"Gelişmiş"** veya **"Advanced"** tıklayın
-- **"Devam Et"** veya **"Proceed"** seçin
-- Bu normal ve güvenlidir (lokal ağ)
+| Sayfa | Adres |
+|--------|--------|
+| Giriş | https://sekreterya.local/login |
+| Admin | https://sekreterya.local/admin |
+| Prisma Studio | https://sekreterya.local:5556 |
 
----
+HTTP (`http://sekreterya.local`) nginx üzerinden HTTPS’e yönlendirilir.
 
-## 📱 Erişim Adresleri
+### IP ile erişim
 
-### 🔒 Ana Uygulama (HTTPS - ÖNERİLEN):
-- **Hostname:** https://sekreterya.local
-- **IP Adresi:** https://192.168.1.133
-- **Login Sayfası:** https://sekreterya.local/login
-- **Admin Panel:** https://sekreterya.local/admin
-
-### 🔒 Prisma Studio (HTTPS):
-- **Hostname:** https://sekreterya.local:5556
-- **IP Adresi:** https://192.168.1.133:5556
-
-### ⚡ HTTP Erişimi:
-- **Not:** HTTP erişimi otomatik olarak HTTPS'e yönlendirilir
-- http://sekreterya.local → https://sekreterya.local
+- Uygulama: https://192.168.1.133
+- Doğrudan Next.js (geliştirme): http://192.168.1.133:3000
 
 ---
 
-## 🔐 Giriş Bilgileri
+## Giriş bilgileri
 
-### Admin Kullanıcıları:
-| Kullanıcı Adı | Şifre |
-|--------------|-------|
+| Kullanıcı | Şifre |
+|-----------|--------|
 | admin | admin123 |
 | admin2 | admin123 |
 
 ---
 
-## ⚠️ Önemli Notlar
+## Admin menüsü
 
-### Windows'ta ".local" Sorunları:
-Eğer `sekreterya.local` çalışmazsa:
+1. **Dashboard** — özet
+2. **İlçe Teşkilatı**
+   - Yönetim Kurulu
+   - Mahalle Başkanları (kişi havuzu)
+3. **Etkinlikler** — etkinlik ve yoklama
+4. **Ayarlar**
+   - Mahalleler (başkan ataması havuzdan)
+   - Komisyonlar
+   - İlçe Görevleri
+   - Veri Yükleme
 
-1. **Bonjour kurulu mu kontrol edin:**
-   - iTunes yüklüyse Bonjour zaten vardır
-   - Yoksa: https://support.apple.com/kb/DL999?locale=en_US
-
-2. **Alternatif: IP Adresi kullanın:**
-   ```
-   http://192.168.1.133:3000
-   ```
-
-3. **hosts dosyasına manuel ekleyin:**
-   - `C:\Windows\System32\drivers\etc\hosts` dosyasını Notepad (Yönetici) ile açın
-   - Ekleyin: `192.168.1.133  sekreterya.local`
-   - Kaydedin
+`/admin/uyeler` eski bağlantıdır; otomatik **Yönetim Kurulu** sayfasına gider.
 
 ---
 
-## 🔄 IP Adresi Değişirse Ne Olur?
+## Mahalle başkanı
 
-### Hostname Kullanıyorsanız:
-✅ **Hiçbir şey yapmanız gerekmez!**
-- `sekreterya.local` otomatik olarak yeni IP'yi bulur
-
-### IP Adresi Kullanıyorsanız:
-❌ **Yeni IP'yi öğrenip değiştirmeniz gerekir**
-
-**Yeni IP'yi öğrenmek için:**
-1. Raspberry Pi'ye SSH ile bağlanın
-2. Komutu çalıştırın: `hostname -I`
-3. Yeni IP'yi kullanın
+| Adım | Nerede |
+|------|--------|
+| Kişi ekle/düzenle | İlçe Teşkilatı → Mahalle Başkanları |
+| Mahalleye ata | Ayarlar → Mahalleler → mahalle düzenle → listeden seç |
 
 ---
 
-## 🧪 Test Etme
+## Servisler (Raspberry Pi)
 
-### 1. Windows Bilgisayarınızdan:
+```bash
+sudo systemctl status sekreteryaapp nginx prisma-studio
+sudo systemctl restart sekreteryaapp
 ```
+
+| Servis | Port | Açıklama |
+|--------|------|----------|
+| sekreteryaapp | 3000 | Next.js production |
+| nginx | 443, 80 | HTTPS reverse proxy |
+| prisma-studio | 5555 (HTTPS 5556) | Veritabanı arayüzü |
+| PostgreSQL | 5432 | Sadece localhost |
+
+Geliştirme:
+
+```bash
+cd /home/ihb/Desktop/projeler/sekreteryaapp
+./start-http.sh          # veya: npm run dev:http
+```
+
+---
+
+## Örnek veri ve test
+
+```bash
+npm run seed:etkinlik    # Demo etkinlik + yoklama
+npm run test:e2e         # API doğrulama (sunucu açık olmalı)
+```
+
+---
+
+## Sorun giderme
+
+### sekreterya.local açılmıyor
+
+- Aynı WiFi/ağda olun
+- Windows: Bonjour veya `hosts` dosyasına `192.168.1.133 sekreterya.local`
+- Geçici: https://192.168.1.133
+
+### Uygulama yanıt vermiyor
+
+```bash
 ping sekreterya.local
+ssh ihb@sekreterya.local
+sudo systemctl restart sekreteryaapp nginx
+curl -sk -o /dev/null -w "%{http_code}\n" https://127.0.0.1/login
 ```
 
-**Başarılı çıktı:**
-```
-Reply from 192.168.1.133: bytes=32 time<1ms TTL=64
-```
+### Yeni IP
 
-### 2. Tarayıcıdan:
-```
-http://sekreterya.local:3000
-```
-
-**Görecekleriniz:**
-- Login sayfası veya
-- Admin paneli (eğer daha önce giriş yaptıysanız)
+- `sekreterya.local` (mDNS) genelde otomatik güncellenir
+- Sabit IP kullanıyorsanız: `hostname -I` ile yeni adresi alın
 
 ---
 
-## 📊 Sistem Bilgileri
-
-- **Hostname:** sekreterya
-- **mDNS Adresi:** sekreterya.local
-- **Mevcut IP:** 192.168.1.133
-- **Port 3000:** Sekreterya App (Production)
-- **Port 5555:** Prisma Studio (Database UI)
-- **Port 5432:** PostgreSQL (Sadece localhost)
-
----
-
-## 🔧 Sorun Giderme
-
-### "sekreterya.local" bulunamıyor hatası:
-
-**Windows'ta:**
-1. Bonjour kurulu mu? → iTunes yükle veya Bonjour indir
-2. Firewall blokluyor mu? → 5353/UDP portunu aç
-3. Aynı ağda mısınız? → WiFi/Ethernet kontrolü
-
-**Hızlı Çözüm:**
-```
-http://192.168.1.133:3000
-```
-
-### Raspberry Pi'ye Bağlanamıyorum:
-
-1. **Raspberry Pi açık mı?**
-   ```bash
-   ping sekreterya.local
-   ```
-
-2. **Servisler çalışıyor mu?**
-   ```bash
-   ssh ihb@sekreterya.local
-   sudo systemctl status sekreteryaapp
-   ```
-
-3. **Aynı ağda mısınız?**
-   - İki cihaz da aynı WiFi/ağa bağlı olmalı
-
----
-
-## 🚀 Hızlı Başlangıç
-
-1. **Tarayıcıyı açın**
-2. **Adres çubuğuna yazın:** `sekreterya.local:3000`
-3. **Enter'a basın**
-4. **Giriş yapın:** admin / admin123
-5. **Admin panelini kullanın!**
-
----
-
-**Son Güncelleme:** Ekim 2025  
-**Raspberry Pi Hostname:** sekreterya  
-**mDNS:** Aktif ✅
-
+**Hostname:** sekreterya  
+**mDNS:** sekreterya.local  
+**Son güncelleme:** Mayıs 2026

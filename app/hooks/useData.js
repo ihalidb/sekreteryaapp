@@ -13,7 +13,8 @@ const apiCall = async (url, options = {}) => {
   });
   
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || `HTTP error! status: ${response.status}`);
   }
   
   return response.json();
@@ -66,6 +67,7 @@ export const useCreateMahalle = () => {
     }),
     onSuccess: () => {
       queryClient.invalidateQueries(['mahalleler']);
+      queryClient.invalidateQueries(['mahalle-baskanlari']);
     },
   });
 };
@@ -80,6 +82,7 @@ export const useUpdateMahalle = () => {
     }),
     onSuccess: () => {
       queryClient.invalidateQueries(['mahalleler']);
+      queryClient.invalidateQueries(['mahalle-baskanlari']);
     },
   });
 };
@@ -94,6 +97,7 @@ export const useDeleteMahalle = () => {
     onSuccess: (_, deletedId) => {
       queryClient.removeQueries(['mahalle', deletedId]);
       queryClient.invalidateQueries(['mahalleler']);
+      queryClient.invalidateQueries(['mahalle-baskanlari']);
     },
   });
 };

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma.js';
+import { assignMahalleBaskan } from '../../../lib/mahalleBaskan.js';
 
 export async function GET() {
   try {
@@ -32,7 +33,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { ad, aciklama, lokalYeri, mahalleBaskanId } = body;
+    const { ad, aciklama, lokalYeri, mahalleBaskanId, mahalleBaskan, mahalleBaskanAssign } = body;
 
     if (!ad || ad.trim() === '') {
       return NextResponse.json({ error: 'Mahalle adı gereklidir' }, { status: 400 });
@@ -45,13 +46,29 @@ export async function POST(request) {
         lokalYeri: lokalYeri?.trim() || null,
         mahalleBaskanId: mahalleBaskanId ? parseInt(mahalleBaskanId) : null,
       },
+    });
+
+    const assignment = mahalleBaskanAssign ?? mahalleBaskan;
+    if (assignment) {
+      try {
+        await assignMahalleBaskan(prisma, mahalle.id, assignment);
+      } catch (err) {
+        return NextResponse.json(
+          { error: err.message || 'Başkan ataması yapılamadı' },
+          { status: 400 }
+        );
+      }
+    }
+
+    const result = await prisma.mahalle.findUnique({
+      where: { id: mahalle.id },
       include: {
         mahalleBaskan: true,
         mahalleBaskanDetay: true,
       },
     });
 
-    return NextResponse.json(mahalle, { status: 201 });
+    return NextResponse.json(result, { status: 201 });
   } catch (error) {
     console.error('Mahalle oluşturma hatası:', error);
     return NextResponse.json({ error: 'Mahalle oluşturulamadı' }, { status: 500 });

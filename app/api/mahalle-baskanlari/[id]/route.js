@@ -46,42 +46,43 @@ export const PUT = async (request, { params }) => {
     const data = await request.json();
     const { ad, soyad, mahalleId, telefon, email, adres } = data;
 
-    if (!ad || !soyad || !mahalleId) {
+    if (!ad || !soyad) {
       return NextResponse.json(
-        { error: 'Ad, soyad ve mahalle zorunludur' },
+        { error: 'Ad ve soyad zorunludur' },
         { status: 400 }
       );
     }
 
-    // Mevcut başkanı al
-    const current = await prisma.mahalleBaskan.findUnique({
-      where: { id }
-    });
+    const updateData = {
+      ad: ad.trim(),
+      soyad: soyad.trim(),
+      telefon: telefon?.trim() || null,
+      email: email?.trim() || null,
+      adres: adres?.trim() || null,
+    };
 
-    // Mahalle değiştiyse, yeni mahalle için başka başkan var mı kontrol et
-    if (current && current.mahalleId !== parseInt(mahalleId)) {
-      const existing = await prisma.mahalleBaskan.findUnique({
-        where: { mahalleId: parseInt(mahalleId) }
-      });
+    if (mahalleId !== undefined) {
+      const parsedMahalleId = mahalleId ? parseInt(mahalleId, 10) : null;
 
-      if (existing) {
-        return NextResponse.json(
-          { error: 'Bu mahalle için zaten bir başkan atanmış' },
-          { status: 400 }
-        );
+      if (parsedMahalleId) {
+        const existing = await prisma.mahalleBaskan.findFirst({
+          where: { mahalleId: parsedMahalleId },
+        });
+
+        if (existing && existing.id !== id) {
+          return NextResponse.json(
+            { error: 'Bu mahalle için zaten bir başkan atanmış' },
+            { status: 400 }
+          );
+        }
       }
+
+      updateData.mahalleId = parsedMahalleId;
     }
 
     const baskan = await prisma.mahalleBaskan.update({
       where: { id },
-      data: {
-        ad: ad.trim(),
-        soyad: soyad.trim(),
-        mahalleId: parseInt(mahalleId),
-        telefon: telefon?.trim() || null,
-        email: email?.trim() || null,
-        adres: adres?.trim() || null,
-      },
+      data: updateData,
       include: {
         mahalle: true,
       }

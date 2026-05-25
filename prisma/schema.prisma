@@ -195,8 +195,8 @@ model MahalleBaskan {
   id         Int      @id @default(autoincrement())
   ad         String
   soyad      String
-  mahalleId  Int      @unique
-  mahalle    Mahalle  @relation("MahalleBaskanDetay", fields: [mahalleId], references: [id], onDelete: Cascade)
+  mahalleId  Int?     @unique
+  mahalle    Mahalle? @relation("MahalleBaskanDetay", fields: [mahalleId], references: [id], onDelete: SetNull)
   telefon    String?
   email      String?
   adres      String?

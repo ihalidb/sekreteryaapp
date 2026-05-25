@@ -55,8 +55,8 @@ const AppSidebar = () => {
     },
     {
       icon: <ListIcon />,
-      name: "Üyeler",
-      path: "/admin/uyeler",
+      name: "Yönetim Kurulu",
+      path: "/admin/yonetim-kurulu",
     },
     {
       icon: <Users2 className="w-6 h-6" />,

@@ -90,13 +90,13 @@ const AdminLayout = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: Home },
-    { 
+    {
       name: 'İlçe Teşkilatı',
       icon: Users2,
       submenu: [
         { name: 'Yönetim Kurulu', href: '/admin/yonetim-kurulu', icon: Users2 },
         { name: 'Mahalle Başkanları', href: '/admin/mahalle-baskanlari', icon: MapPin },
-      ]
+      ],
     },
     { name: 'Etkinlikler', href: '/admin/etkinlikler', icon: Calendar },
     { 

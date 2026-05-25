@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma.js';
+import { assignMahalleBaskan } from '../../../../lib/mahalleBaskan.js';
 
 export async function GET(request, { params }) {
   try {
@@ -39,13 +40,13 @@ export async function PUT(request, { params }) {
     const { id: paramId } = await params;
     const id = parseInt(paramId);
     const body = await request.json();
-    const { ad, aciklama, lokalYeri, mahalleBaskanId } = body;
+    const { ad, aciklama, lokalYeri, mahalleBaskanId, mahalleBaskan, mahalleBaskanAssign } = body;
 
     if (!ad || ad.trim() === '') {
       return NextResponse.json({ error: 'Mahalle adı gereklidir' }, { status: 400 });
     }
 
-    const mahalle = await prisma.mahalle.update({
+    await prisma.mahalle.update({
       where: { id },
       data: {
         ad: ad.trim(),
@@ -53,9 +54,27 @@ export async function PUT(request, { params }) {
         lokalYeri: lokalYeri?.trim() || null,
         mahalleBaskanId: mahalleBaskanId ? parseInt(mahalleBaskanId) : null,
       },
+    });
+
+    const assignment = mahalleBaskanAssign !== undefined ? mahalleBaskanAssign : mahalleBaskan;
+    if (assignment !== undefined) {
+      try {
+        await assignMahalleBaskan(prisma, id, assignment);
+      } catch (err) {
+        return NextResponse.json(
+          { error: err.message || 'Başkan ataması yapılamadı' },
+          { status: 400 }
+        );
+      }
+    }
+
+    const mahalle = await prisma.mahalle.findUnique({
+      where: { id },
       include: {
         mahalleBaskan: true,
         mahalleBaskanDetay: true,
+        sorumluUyeler: { include: { uye: true } },
+        sorumluYonetimKurulu: { include: { yonetimKuruluUyesi: true } },
       },
     });
 

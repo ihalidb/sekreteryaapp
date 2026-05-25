@@ -21,6 +21,28 @@ const nextConfig = {
   reactStrictMode: true,
   // Cross-origin uyarısını kaldır
   allowedDevOrigins: ['31.40.199.71', '192.168.1.133'],
+  // HTTP için güvenlik ayarları
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+        ],
+      },
+    ];
+  },
   // WebSocket ayarları (network üzerinden erişim için)
   webpack: (config, { isServer }) => {
     if (!isServer) {
