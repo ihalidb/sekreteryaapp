@@ -207,7 +207,7 @@ export default function YoklamaOverviewPage() {
             <div
               className={`flex items-center justify-center w-12 h-12 rounded-lg flex-shrink-0 ${
                 bugun
-                  ? 'bg-orange-50 dark:bg-orange-900/30'
+                  ? 'bg-brand-50 dark:bg-brand-900/30'
                   : yakinda
                   ? 'bg-brand-50 dark:bg-brand-900/30'
                   : 'bg-gray-50 dark:bg-gray-800'
@@ -216,7 +216,7 @@ export default function YoklamaOverviewPage() {
               <Calendar
                 className={`w-6 h-6 ${
                   bugun
-                    ? 'text-orange-500'
+                    ? 'text-brand-500'
                     : yakinda
                     ? 'text-brand-500'
                     : 'text-gray-500 dark:text-gray-400'
@@ -369,10 +369,10 @@ export default function YoklamaOverviewPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400">Bugün</p>
-              <h3 className="text-xl font-bold text-orange-600 dark:text-orange-400 mt-1">{totalStats.bugun}</h3>
+              <h3 className="text-xl font-bold text-brand-600 dark:text-brand-400 mt-1">{totalStats.bugun}</h3>
             </div>
             <div className="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center dark:bg-orange-900/30">
-              <Bell className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              <Bell className="w-5 h-5 text-brand-600 dark:text-brand-400" />
             </div>
           </div>
         </Card>
@@ -437,7 +437,7 @@ export default function YoklamaOverviewPage() {
       {groupedEtkinlikler.today.length > 0 && (
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-4">
-            <Bell className="w-5 h-5 text-orange-500" />
+            <Bell className="w-5 h-5 text-brand-500" />
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
               Bugünkü Etkinlikler
             </h2>

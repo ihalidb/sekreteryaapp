@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import AppLogo from '../components/AppLogo';
 import { useSidebar } from '../context/SidebarContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -79,19 +80,9 @@ const AppHeader = () => {
             )}
           </button>
 
-          <Link href="/admin" className="lg:hidden flex items-center gap-2">
-            <div className="flex items-center justify-center w-8 h-8 bg-orange-500 rounded-lg">
-              <span className="text-white font-bold text-sm">AK</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                AK PARTİ
-              </span>
-              <span className="text-[10px] text-gray-600 dark:text-gray-400 leading-tight">
-                Fatih
-              </span>
-            </div>
-          </Link>
+          <div className="lg:hidden">
+            <AppLogo href="/admin" size="xs" />
+          </div>
 
           <button
             onClick={toggleApplicationMenu}

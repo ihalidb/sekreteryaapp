@@ -315,8 +315,8 @@ export default function MahallelerPage() {
             {!formData.baskanKaldir && (
               <>
                 {havuzBos ? (
-                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-                    <p className="text-sm text-amber-800 dark:text-amber-300">
+                  <div className="p-3 bg-accent-50 dark:bg-accent-900/20 rounded-lg">
+                    <p className="text-sm text-accent-800 dark:text-accent-300">
                       Henüz havuzda başkan yok. Önce{' '}
                       <Link href="/admin/mahalle-baskanlari" className="font-medium underline">
                         Mahalle Başkanları

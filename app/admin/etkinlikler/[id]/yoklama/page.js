@@ -277,7 +277,7 @@ export default function YoklamaPage() {
 
   const getDurumBgClass = (durum) => {
     if (durum?.startsWith('Mazeretli')) {
-      return 'border-orange-300 bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-600';
+      return 'border-brand-300 bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-400 dark:border-brand-600';
     }
     
     switch (durum) {
@@ -385,12 +385,12 @@ export default function YoklamaPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400">Mazeretli</p>
-              <h3 className="text-xl font-bold text-orange-600 dark:text-orange-400 mt-1">
+              <h3 className="text-xl font-bold text-brand-600 dark:text-brand-400 mt-1">
                 {stats.mazeretli}
               </h3>
             </div>
-            <div className="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center dark:bg-orange-900/30">
-              <AlertCircle className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+            <div className="w-10 h-10 bg-brand-50 rounded-lg flex items-center justify-center dark:bg-brand-900/30">
+              <AlertCircle className="w-5 h-5 text-brand-600 dark:text-brand-400" />
             </div>
           </div>
         </Card>

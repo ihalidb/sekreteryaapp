@@ -207,8 +207,8 @@ const UyeDetayModal = ({ uyeId, isOpen, onClose }) => {
                     <p className="text-[10px] text-gray-500 dark:text-gray-400">Katıldı</p>
                   </div>
 
-                  <div className="text-center p-2 bg-orange-50 rounded dark:bg-orange-900/20">
-                    <p className="text-lg font-bold text-orange-600 dark:text-orange-400">
+                  <div className="text-center p-2 bg-brand-50 rounded dark:bg-brand-900/20">
+                    <p className="text-lg font-bold text-brand-600 dark:text-brand-400">
                       {uyeData.stats.mazeretli}
                     </p>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400">Mazeretli</p>

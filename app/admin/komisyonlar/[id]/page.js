@@ -148,8 +148,8 @@ export default function KomisyonDetayPage({ params }) {
               Toplam {komisyon?.uyeler?.length || 0} üye
             </p>
           </div>
-          <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <p className="text-xs text-blue-700 dark:text-blue-400">
+          <div className="px-4 py-2 bg-accent-50 dark:bg-accent-900/20 rounded-lg">
+            <p className="text-xs text-accent-700 dark:text-accent-400">
               ℹ️ Üye yönetimi devre dışı
             </p>
           </div>

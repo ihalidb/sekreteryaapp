@@ -158,8 +158,8 @@ export default function YonetimKuruluPage() {
                 <TableRow key={uye.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-10 h-10 bg-orange-50 rounded-full dark:bg-orange-900/20">
-                        <Users2 className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                      <div className="flex items-center justify-center w-10 h-10 bg-brand-50 rounded-full dark:bg-brand-900/20">
+                        <Users2 className="w-5 h-5 text-brand-600 dark:text-brand-400" />
                       </div>
                       <div>
                         <p className="font-medium text-gray-800 dark:text-white/90">
@@ -246,8 +246,8 @@ export default function YonetimKuruluPage() {
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-10 h-10 bg-orange-50 rounded-full dark:bg-orange-900/20">
-                    <Users2 className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                  <div className="flex items-center justify-center w-10 h-10 bg-brand-50 rounded-full dark:bg-brand-900/20">
+                    <Users2 className="w-5 h-5 text-brand-600 dark:text-brand-400" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800 dark:text-white/90">

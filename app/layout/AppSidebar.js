@@ -18,6 +18,7 @@ import {
   GroupIcon,
 } from '../icons';
 import { ClipboardCheck, Users2, MapPinned, ChevronRight } from 'lucide-react';
+import AppLogo from '../components/AppLogo';
 
 const AppSidebar = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered, setIsMobileOpen } = useSidebar();
@@ -109,31 +110,12 @@ const AppSidebar = () => {
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="px-5 py-8">
-        <Link 
-          href="/admin" 
-          className={`flex items-center gap-3 ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`}
-        >
-          {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <div className="flex items-center justify-center w-10 h-10 bg-orange-500 rounded-lg flex-shrink-0">
-                <span className="text-white font-bold text-xl">AK</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-                  AK PARTİ
-                </span>
-                <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight">
-                  Fatih İlçe Teşkilatı
-                </span>
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center justify-center w-10 h-10 bg-orange-500 rounded-lg">
-              <span className="text-white font-bold text-lg">AK</span>
-            </div>
-          )}
-        </Link>
+      <div className="px-5 py-6">
+        {isExpanded || isHovered || isMobileOpen ? (
+          <AppLogo href="/admin" size="sm" priority />
+        ) : (
+          <AppLogo href="/admin" size="xs" iconOnly priority className="lg:mx-auto" />
+        )}
       </div>
 
       <div className="flex flex-col flex-1 overflow-y-auto no-scrollbar">
@@ -197,12 +179,12 @@ const AppSidebar = () => {
                                   prefetch={true}
                                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-150 ${
                                     isActive(subItem.path)
-                                      ? "bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400"
+                                      ? "bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-400"
                                       : "text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800/50"
                                   }`}
                                 >
                                   <span className={`${
-                                    isActive(subItem.path) ? "text-orange-600 dark:text-orange-400" : ""
+                                    isActive(subItem.path) ? "text-brand-600 dark:text-brand-400" : ""
                                   }`}>
                                     {subItem.icon}
                                   </span>

@@ -452,7 +452,7 @@ export default function EtkinliklerPage() {
               ))}
             </select>
             <div className="flex items-start gap-2 mt-2">
-              <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+              <Info className="w-4 h-4 text-accent-500 flex-shrink-0 mt-0.5" />
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 Seçilen gruplardaki tüm üyeler otomatik eklenecek. Birden fazla seçmek için Ctrl (Cmd) tuşunu basılı tutun
               </p>

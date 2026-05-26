@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import AppLogo from '../components/AppLogo';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -73,30 +74,23 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-accent-50 via-white to-brand-50 px-4">
       <div className="max-w-md w-full space-y-8">
         {/* Logo ve Başlık */}
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <svg
-              className="h-10 w-10 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-          </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Sekreterya App
+          <AppLogo
+            asLink={false}
+            href={null}
+            size="xl"
+            iconOnly
+            priority
+            className="justify-center mx-auto drop-shadow-md"
+          />
+          <h2 className="mt-5 text-xl font-bold text-accent-700">
+            Fatih İlçe Teşkilatı
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Admin Paneline Giriş
+          <p className="mt-1 text-sm text-gray-600">
+            Sekreterya — Admin Paneline Giriş
           </p>
         </div>
 
@@ -143,7 +137,7 @@ const LoginPage = () => {
                 required
                 value={formData.username}
                 onChange={handleChange}
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="Kullanıcı adınızı girin"
                 disabled={loading}
               />
@@ -165,7 +159,7 @@ const LoginPage = () => {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="Şifrenizi girin"
                 disabled={loading}
               />
@@ -176,7 +170,7 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-accent-600 to-brand-500 hover:from-accent-700 hover:to-brand-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
               >
                 {loading ? (
                   <div className="flex items-center">
@@ -218,9 +212,9 @@ const LoginPage = () => {
         </div>
 
         {/* Demo Credentials (Geliştirme için - Production'da kaldırın) */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-xs text-blue-800 font-medium mb-2">Demo Kullanıcılar:</p>
-          <div className="text-xs text-blue-700 space-y-1">
+        <div className="bg-accent-50 border border-accent-200 rounded-lg p-4">
+          <p className="text-xs text-accent-800 font-medium mb-2">Demo Kullanıcılar:</p>
+          <div className="text-xs text-accent-700 space-y-1">
             <p>• admin / admin123</p>
             <p>• admin2 / admin123</p>
           </div>

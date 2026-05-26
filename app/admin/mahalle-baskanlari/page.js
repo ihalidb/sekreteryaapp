@@ -137,8 +137,8 @@ export default function MahalleBaskanlarPage() {
                 <TableRow key={baskan.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-10 h-10 bg-blue-50 rounded-full dark:bg-blue-900/20">
-                        <MapPinned className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      <div className="flex items-center justify-center w-10 h-10 bg-accent-50 rounded-full dark:bg-accent-900/20">
+                        <MapPinned className="w-5 h-5 text-accent-600 dark:text-accent-400" />
                       </div>
                       <div>
                         <p className="font-medium text-gray-800 dark:text-white/90">
@@ -270,8 +270,8 @@ export default function MahalleBaskanlarPage() {
             </p>
           )}
 
-          <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <p className="text-sm text-blue-700 dark:text-blue-400">
+          <div className="p-3 bg-accent-50 dark:bg-accent-900/20 rounded-lg">
+            <p className="text-sm text-accent-700 dark:text-accent-400">
               Mahalle ataması bu ekrandan yapılmaz. Kişiyi kaydettikten sonra Ayarlar → Mahalleler üzerinden
               mahalleye atayın.
             </p>

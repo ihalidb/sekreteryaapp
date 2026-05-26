@@ -142,10 +142,10 @@ const VeriYuklemePage = () => {
       </div>
 
       {/* Bilgilendirme */}
-      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-lg">
+      <div className="bg-accent-50 border-l-4 border-accent-500 p-4 mb-6 rounded-lg">
         <div className="flex items-start">
-          <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
-          <div className="text-sm text-blue-800">
+          <AlertCircle className="h-5 w-5 text-accent-600 mt-0.5 mr-3 flex-shrink-0" />
+          <div className="text-sm text-accent-800">
             <p className="font-semibold mb-1">Nasıl Kullanılır?</p>
             <ol className="list-decimal list-inside space-y-1">
               <li>İstediğiniz veri tipi için şablonu indirin</li>
@@ -163,8 +163,8 @@ const VeriYuklemePage = () => {
             key={type.id}
             className={`bg-white border-2 rounded-xl p-6 cursor-pointer transition-all duration-200 hover:shadow-lg ${
               selectedType === type.id
-                ? 'border-blue-600 shadow-lg'
-                : 'border-gray-200 hover:border-blue-300'
+                ? 'border-accent-600 shadow-lg'
+                : 'border-gray-200 hover:border-accent-300'
             }`}
             onClick={() => setSelectedType(type.id)}
           >
@@ -175,7 +175,7 @@ const VeriYuklemePage = () => {
                   e.stopPropagation();
                   handleDownloadTemplate(type.id);
                 }}
-                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                className="p-2 text-accent-600 hover:bg-accent-50 rounded-lg transition-colors"
                 title="Şablonu İndir"
               >
                 <Download className="h-5 w-5" />
@@ -208,7 +208,7 @@ const VeriYuklemePage = () => {
       {selectedType && (
         <div className="bg-white border border-gray-200 rounded-xl p-8 mb-6">
           <div className="flex items-center mb-6">
-            <FileSpreadsheet className="h-6 w-6 text-blue-600 mr-3" />
+            <FileSpreadsheet className="h-6 w-6 text-accent-600 mr-3" />
             <h2 className="text-xl font-semibold text-gray-900">
               {dataTypes.find(t => t.id === selectedType)?.name} Yükleme
             </h2>
@@ -228,7 +228,7 @@ const VeriYuklemePage = () => {
                 type="file"
                 accept=".xlsx,.xls"
                 onChange={handleFileChange}
-                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer"
+                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-600 file:text-white hover:file:bg-accent-700 file:cursor-pointer"
               />
             </div>
             {file && (
@@ -244,7 +244,7 @@ const VeriYuklemePage = () => {
             <button
               onClick={handleUpload}
               disabled={!file || uploading}
-              className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="flex items-center px-6 py-3 bg-gradient-to-r from-accent-600 to-brand-500 text-white font-semibold rounded-lg hover:from-accent-700 hover:to-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               <Upload className="h-5 w-5 mr-2" />
               {uploading ? 'Yükleniyor...' : 'Yükle'}
@@ -252,7 +252,7 @@ const VeriYuklemePage = () => {
 
             <button
               onClick={() => handleDownloadTemplate(selectedType)}
-              className="flex items-center px-6 py-3 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors duration-200"
+              className="flex items-center px-6 py-3 bg-white border-2 border-accent-600 text-accent-600 font-semibold rounded-lg hover:bg-accent-50 transition-colors duration-200"
             >
               <Download className="h-5 w-5 mr-2" />
               Şablon İndir

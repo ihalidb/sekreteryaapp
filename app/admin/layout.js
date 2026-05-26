@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Home, Users, MapPin, Briefcase, Calendar, UserCog, LogOut, Menu, X, FileSpreadsheet, Users2, ChevronDown, Settings } from 'lucide-react';
+import AppLogo from '../components/AppLogo';
 
 const AdminLayout = ({ children }) => {
   const router = useRouter();
@@ -119,7 +120,7 @@ const AdminLayout = ({ children }) => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-600"></div>
           <p className="mt-4 text-gray-600">Yükleniyor...</p>
         </div>
       </div>
@@ -148,27 +149,8 @@ const AdminLayout = ({ children }) => {
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <svg
-                  className="h-5 w-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Sekreterya
-              </span>
-            </div>
+          <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+            <AppLogo href="/admin" size="sm" priority />
             <button
               onClick={() => setSidebarOpen(false)}
               className="lg:hidden text-gray-500 hover:text-gray-700"
@@ -193,7 +175,7 @@ const AdminLayout = ({ children }) => {
                       onClick={() => handleSubmenuToggle(index)}
                       className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                         isAnySubmenuActive
-                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                          ? 'bg-gradient-to-r from-accent-600 to-brand-500 text-white shadow-lg'
                           : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                       }`}
                     >
@@ -217,7 +199,7 @@ const AdminLayout = ({ children }) => {
                               onClick={() => setSidebarOpen(false)}
                               className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                                 isActive
-                                  ? 'bg-blue-50 text-blue-600 border-l-2 border-blue-600'
+                                  ? 'bg-brand-50 text-brand-700 border-l-2 border-brand-500'
                                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                               }`}
                             >
@@ -241,7 +223,7 @@ const AdminLayout = ({ children }) => {
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                     isActive
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                      ? 'bg-gradient-to-r from-accent-600 to-brand-500 text-white shadow-lg'
                       : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
@@ -288,7 +270,7 @@ const AdminLayout = ({ children }) => {
                 {/* Admin Info & Logout */}
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-accent-500 to-brand-500 flex items-center justify-center text-white font-semibold text-sm">
                       {user.name ? user.name.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()}
                     </div>
                     <span className="text-sm font-medium text-gray-900 hidden sm:block">
