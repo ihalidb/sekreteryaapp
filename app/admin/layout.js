@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, Users, MapPin, Briefcase, Calendar, UserCog, LogOut, Menu, X, FileSpreadsheet, Users2, ChevronDown, Settings } from 'lucide-react';
+import { Home, MapPin, Briefcase, Calendar, UserCog, LogOut, Menu, X, FileSpreadsheet, Users2, ChevronDown, Settings, ShieldCheck, Ticket, Inbox } from 'lucide-react';
 import AppLogo from '../components/AppLogo';
 
 const AdminLayout = ({ children }) => {
@@ -89,18 +89,28 @@ const AdminLayout = ({ children }) => {
     }
   };
 
+  const isSuperAdmin = user?.role === 'SUPER_ADMIN';
+  const isAdmin = user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN';
+  const isViewer = user?.role === 'VIEWER';
+
   const navigation = [
-    { name: 'Dashboard', href: '/admin', icon: Home },
-    {
+    ...(isViewer ? [] : [{ name: 'Dashboard', href: '/admin', icon: Home }]),
+    ...(!isViewer ? [{
       name: 'İlçe Teşkilatı',
       icon: Users2,
       submenu: [
         { name: 'Yönetim Kurulu', href: '/admin/yonetim-kurulu', icon: Users2 },
         { name: 'Mahalle Başkanları', href: '/admin/mahalle-baskanlari', icon: MapPin },
       ],
-    },
-    { name: 'Etkinlikler', href: '/admin/etkinlikler', icon: Calendar },
-    { 
+    }] : []),
+    ...(!isViewer ? [{ name: 'Etkinlikler', href: '/admin/etkinlikler', icon: Calendar }] : []),
+    ...(isAdmin ? [{
+      name: 'Talepler',
+      href: '/admin/talepler',
+      icon: Ticket,
+    }] : []),
+    ...(isViewer ? [{ name: 'Taleplerim', href: '/admin/taleplerim', icon: Inbox }] : []),
+    ...(!isViewer ? [{
       name: 'Ayarlar',
       icon: Settings,
       submenu: [
@@ -108,8 +118,12 @@ const AdminLayout = ({ children }) => {
         { name: 'Komisyonlar', href: '/admin/komisyonlar', icon: Briefcase },
         { name: 'İlçe Görevleri', href: '/admin/ilce-gorevler', icon: UserCog },
         { name: 'Veri Yükleme', href: '/admin/veri-yukleme', icon: FileSpreadsheet },
+        ...(isSuperAdmin ? [
+          { name: 'Portal Hesapları', href: '/admin/ayarlar/portal-hesaplari', icon: Users2 },
+          { name: 'Kullanıcı Yönetimi', href: '/admin/ayarlar', icon: ShieldCheck },
+        ] : []),
       ]
-    },
+    }] : []),
   ];
 
   const handleSubmenuToggle = (index) => {
@@ -118,10 +132,10 @@ const AdminLayout = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-600"></div>
-          <p className="mt-4 text-gray-600">Yükleniyor...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Yükleniyor...</p>
         </div>
       </div>
     );
@@ -132,7 +146,7 @@ const AdminLayout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
@@ -143,7 +157,7 @@ const AdminLayout = ({ children }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -175,8 +189,8 @@ const AdminLayout = ({ children }) => {
                       onClick={() => handleSubmenuToggle(index)}
                       className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                         isAnySubmenuActive
-                          ? 'bg-gradient-to-r from-accent-600 to-brand-500 text-white shadow-lg'
-                          : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          ? 'bg-brand-500 text-white shadow'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                       }`}
                     >
                       <div className="flex items-center">
@@ -199,8 +213,8 @@ const AdminLayout = ({ children }) => {
                               onClick={() => setSidebarOpen(false)}
                               className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                                 isActive
-                                  ? 'bg-brand-50 text-brand-700 border-l-2 border-brand-500'
-                                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                  ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400 border-l-2 border-brand-500'
+                                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                               }`}
                             >
                               <SubIcon className="mr-3 h-4 w-4" />
@@ -223,8 +237,8 @@ const AdminLayout = ({ children }) => {
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                     isActive
-                      ? 'bg-gradient-to-r from-accent-600 to-brand-500 text-white shadow-lg'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      ? 'bg-brand-500 text-white shadow'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   <Icon className="mr-3 h-5 w-5" />
@@ -240,7 +254,7 @@ const AdminLayout = ({ children }) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Bar */}
-        <header className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
+        <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -249,7 +263,7 @@ const AdminLayout = ({ children }) => {
               <Menu className="h-6 w-6" />
             </button>
             <div className="flex-1 flex items-center justify-between lg:justify-end">
-              <h1 className="text-xl font-semibold text-gray-900 lg:hidden">
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white lg:hidden">
                 {(() => {
                   // Normal menu item kontrolü
                   const mainItem = navigation.find((item) => item.href === pathname);
@@ -270,12 +284,21 @@ const AdminLayout = ({ children }) => {
                 {/* Admin Info & Logout */}
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-accent-500 to-brand-500 flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="h-8 w-8 rounded-full bg-accent-600 flex items-center justify-center text-white font-semibold text-sm">
                       {user.name ? user.name.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()}
                     </div>
-                    <span className="text-sm font-medium text-gray-900 hidden sm:block">
-                      {user.name || user.username}
-                    </span>
+                    <div className="hidden sm:flex flex-col items-start">
+                      <span className="text-sm font-medium text-gray-900 dark:text-white leading-tight">
+                        {user.name || user.username}
+                      </span>
+                      <span className={`text-xs leading-tight ${
+                        user.role === 'SUPER_ADMIN' ? 'text-red-600' :
+                        user.role === 'ADMIN' ? 'text-blue-600' :
+                        user.role === 'EDITOR' ? 'text-yellow-600' : 'text-gray-500'
+                      }`}>
+                        {user.role === 'SUPER_ADMIN' ? 'Süper Admin' : user.role === 'ADMIN' ? 'Admin' : user.role === 'EDITOR' ? 'Editör' : 'Görüntüleyici'}
+                      </span>
+                    </div>
                   </div>
                   <button
                     onClick={handleLogout}
@@ -295,7 +318,7 @@ const AdminLayout = ({ children }) => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 py-6 px-4 sm:px-6 lg:px-8 overflow-auto">
+        <main className="flex-1 py-6 px-4 sm:px-6 lg:px-8 overflow-auto dark:bg-gray-900">
           {children}
         </main>
       </div>

@@ -20,6 +20,7 @@ model Mahalle {
   mahalleBaskanDetay MahalleBaskan? @relation("MahalleBaskanDetay")
   sorumluUyeler   UyeMahalle[]
   sorumluYonetimKurulu YonetimKuruluMahalle[] @relation("YonetimKuruluSorumlu")
+  talepler        Talep[]        @relation("TalepMahalle")
   createdBy       Int?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -98,10 +99,10 @@ model Etkinlik {
   aciklama              String?
   tarih                 DateTime
   konum                 String?
-  zorunlu               Boolean           @default(true) // Zorunlu etkinlik mi?
+  zorunlu               Boolean           @default(true)
   yoklamalar            EtkinlikYoklama[]
   komisyonlar           EtkinlikKomisyon[]
-  ilceYonetimKuruluEkle Boolean           @default(false) // İlçe Yönetim Kurulu üyelerini ekle
+  ilceYonetimKuruluEkle Boolean           @default(false)
   createdBy             Int?
   createdAt             DateTime          @default(now())
   updatedAt             DateTime          @updatedAt
@@ -165,15 +166,19 @@ model YonetimKuruluUyesi {
   telefon          String?
   email            String?
   adres            String?
-  sira             Int                    @default(0) // Gösterim sırası
+  sira             Int                    @default(0)
+  adminId          Int?                   @unique
+  admin            Admin?                 @relation("YKAdmin", fields: [adminId], references: [id], onDelete: SetNull)
   sorumluMahalleler YonetimKuruluMahalle[]
   komisyonlar      Komisyon[]             @relation("KomisyonBaskan")
+  atananTalepler   Talep[]                @relation("TalepAtanan")
   createdBy        Int?
   createdAt        DateTime               @default(now())
   updatedAt        DateTime               @updatedAt
 
   @@index([sira])
   @@index([ilceGorevId])
+  @@index([adminId])
   @@map("yonetim_kurulu_uyeleri")
 }
 
@@ -200,30 +205,116 @@ model MahalleBaskan {
   telefon    String?
   email      String?
   adres      String?
+  adminId    Int?     @unique
+  admin      Admin?   @relation("MBAdmin", fields: [adminId], references: [id], onDelete: SetNull)
   createdBy  Int?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   @@index([mahalleId])
+  @@index([adminId])
   @@map("mahalle_baskanlari")
 }
 
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum TalepDurum {
+  YENI
+  ATANDI
+  ISLEMDE
+  COZULDU
+  KAPALI
+  REDDEDILDI
+}
+
+enum TalepOncelik {
+  DUSUK
+  NORMAL
+  YUKSEK
+  ACIL
+}
+
+model AdminIzin {
+  id              Int       @id @default(autoincrement())
+  adminId         Int       @unique
+  admin           Admin     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  mahalleler      String    @default("none")
+  uyeler          String    @default("none")
+  etkinlikler     String    @default("none")
+  komisyonlar     String    @default("none")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("admin_izinler")
+}
+
+model TalepKategori {
+  id        Int      @id @default(autoincrement())
+  ad        String
+  aciklama  String?
+  renk      String   @default("#6366f1")
+  sira      Int      @default(0)
+  active    Boolean  @default(true)
+  talepler  Talep[]
+  createdBy Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sira])
+  @@map("talep_kategoriler")
+}
+
+model Talep {
+  id          Int                  @id @default(autoincrement())
+  baslik      String
+  aciklama    String?
+  kategoriId  Int?
+  kategori    TalepKategori?       @relation(fields: [kategoriId], references: [id], onDelete: SetNull)
+  mahalleId   Int?
+  mahalle     Mahalle?             @relation("TalepMahalle", fields: [mahalleId], references: [id], onDelete: SetNull)
+  olusturanId Int
+  olusturan   Admin                @relation("TalepOlusturan", fields: [olusturanId], references: [id])
+  atananYKId  Int?
+  atananYK    YonetimKuruluUyesi?  @relation("TalepAtanan", fields: [atananYKId], references: [id], onDelete: SetNull)
+  durum       TalepDurum           @default(YENI)
+  oncelik     TalepOncelik         @default(NORMAL)
+  notlar      Json                 @default("[]")
+  createdBy   Int?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@index([olusturanId])
+  @@index([atananYKId])
+  @@index([mahalleId])
+  @@index([durum])
+  @@map("talepler")
+}
+
 model Admin {
-  id             Int      @id @default(autoincrement())
-  username       String   @unique
+  id             Int                  @id @default(autoincrement())
+  username       String               @unique
   password       String
   name           String?
   email          String?
-  active         Boolean  @default(true)
-  role           String   @default("admin")
-  sessionToken   String?  @unique
+  active         Boolean              @default(true)
+  role           AdminRole            @default(ADMIN)
+  izinler        AdminIzin?
+  mahalleBaskan  MahalleBaskan?       @relation("MBAdmin")
+  ykUyesi        YonetimKuruluUyesi?  @relation("YKAdmin")
+  talepler       Talep[]              @relation("TalepOlusturan")
+  sessionToken   String?              @unique
   sessionExpiry  DateTime?
   lastLogin      DateTime?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdBy      Int?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
 
   @@index([username])
   @@index([sessionToken])
   @@map("admins")
 }
-

@@ -358,3 +358,94 @@ export const useDeleteMahalleBaskan = () => {
     },
   });
 };
+
+// ─── Talep Kategorileri ───────────────────────────────────────────────────────
+
+export const useTalepKategoriler = () => {
+  return useQuery({
+    queryKey: ['talep-kategoriler'],
+    queryFn: () => apiCall('/api/talep-kategoriler'),
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const useCreateTalepKategori = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => apiCall('/api/talep-kategoriler', { method: 'POST', body: JSON.stringify(data) }),
+    onSuccess: () => { queryClient.invalidateQueries(['talep-kategoriler']); },
+  });
+};
+
+export const useUpdateTalepKategori = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...data }) => apiCall(`/api/talep-kategoriler/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    onSuccess: () => { queryClient.invalidateQueries(['talep-kategoriler']); },
+  });
+};
+
+export const useDeleteTalepKategori = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => apiCall(`/api/talep-kategoriler/${id}`, { method: 'DELETE' }),
+    onSuccess: () => { queryClient.invalidateQueries(['talep-kategoriler']); },
+  });
+};
+
+// ─── Talepler ─────────────────────────────────────────────────────────────────
+
+export const useTalepler = () => {
+  return useQuery({
+    queryKey: ['talepler'],
+    queryFn: () => apiCall('/api/talepler'),
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useTalepDetay = (id) => {
+  return useQuery({
+    queryKey: ['talep', id],
+    queryFn: () => apiCall(`/api/talepler/${id}`),
+    enabled: !!id,
+    staleTime: 30 * 1000,
+  });
+};
+
+export const useCreateTalep = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => apiCall('/api/talepler', { method: 'POST', body: JSON.stringify(data) }),
+    onSuccess: () => { queryClient.invalidateQueries(['talepler']); },
+  });
+};
+
+export const useUpdateTalep = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...data }) => apiCall(`/api/talepler/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries(['talepler']);
+      queryClient.invalidateQueries(['talep', vars.id]);
+    },
+  });
+};
+
+export const useDeleteTalep = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => apiCall(`/api/talepler/${id}`, { method: 'DELETE' }),
+    onSuccess: () => { queryClient.invalidateQueries(['talepler']); },
+  });
+};
+
+export const useEkleTalepNot = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, icerik }) => apiCall(`/api/talepler/${id}/not`, { method: 'POST', body: JSON.stringify({ icerik }) }),
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries(['talep', vars.id]);
+      queryClient.invalidateQueries(['talepler']);
+    },
+  });
+};

@@ -6,7 +6,7 @@ import './globals.css';
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="tr">
+    <html lang="tr" className="dark">
       <head>
         <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/images/logo/ak-parti-logo.png" />

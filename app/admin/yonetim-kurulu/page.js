@@ -8,7 +8,7 @@ import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
 import Badge from '../../components/ui/Badge';
 import { PlusIcon, PencilIcon, TrashBinIcon } from '../../icons';
-import { User, Phone, Mail, MapPin, Users2 } from 'lucide-react';
+import { User, Phone, Mail, MapPin, Users2, Eye, EyeOff } from 'lucide-react';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import {
   useYonetimKurulu,
@@ -23,15 +23,11 @@ import Select from '../../components/ui/Select';
 export default function YonetimKuruluPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingUye, setEditingUye] = useState(null);
+  const [showSifre, setShowSifre] = useState(false);
+  const [olusturulanKullanici, setOlusturulanKullanici] = useState(null);
   const [formData, setFormData] = useState({
-    ad: '',
-    soyad: '',
-    ilceGorevId: '',
-    telefon: '',
-    email: '',
-    adres: '',
-    sira: 0,
-    sorumluMahalleler: [],
+    ad: '', soyad: '', ilceGorevId: '', telefon: '', email: '',
+    adres: '', sira: 0, sorumluMahalleler: [], sifre: '',
   });
 
   const { data: uyeler, isLoading } = useYonetimKurulu();
@@ -56,17 +52,10 @@ export default function YonetimKuruluPage() {
       });
     } else {
       setEditingUye(null);
-      setFormData({
-        ad: '',
-        soyad: '',
-        ilceGorevId: '',
-        telefon: '',
-        email: '',
-        adres: '',
-        sira: 0,
-        sorumluMahalleler: [],
-      });
+      setFormData({ ad: '', soyad: '', ilceGorevId: '', telefon: '', email: '', adres: '', sira: 0, sorumluMahalleler: [], sifre: '', yeniSifre: '' });
     }
+    setOlusturulanKullanici(null);
+    setShowSifre(false);
     setShowModal(true);
   };
 
@@ -89,11 +78,13 @@ export default function YonetimKuruluPage() {
     e.preventDefault();
     try {
       if (editingUye) {
-        await updateUye.mutateAsync({ id: editingUye.id, ...formData });
+        await updateUye.mutateAsync({ id: editingUye.id, ...formData, yeniSifre: formData.yeniSifre || undefined });
+        handleCloseModal();
       } else {
-        await createUye.mutateAsync(formData);
+        const result = await createUye.mutateAsync(formData);
+        if (result?._username) { setOlusturulanKullanici(result._username); return; }
+        handleCloseModal();
       }
-      handleCloseModal();
     } catch (error) {
       console.error('Hata:', error);
       alert('İşlem sırasında bir hata oluştu');
@@ -324,6 +315,26 @@ export default function YonetimKuruluPage() {
         title={editingUye ? 'Üye Düzenle' : 'Yeni Üye Ekle'}
         size="lg"
       >
+        {olusturulanKullanici ? (
+          <div className="space-y-4">
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-5 text-center space-y-3">
+              <div className="h-12 w-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto">
+                <User className="h-6 w-6 text-green-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-green-800">YK üyesi başarıyla eklendi!</p>
+                <p className="text-sm text-green-700 dark:text-green-400 mt-1">Sistem girişi için kullanıcı hesabı oluşturuldu.</p>
+              </div>
+              <div className="bg-white dark:bg-gray-800 border border-green-200 dark:border-green-900 rounded-lg px-4 py-3 text-sm">
+                <p className="text-gray-500 text-xs mb-1">Kullanıcı Adı</p>
+                <p className="font-mono font-bold text-gray-900 dark:text-white text-lg">{olusturulanKullanici}</p>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <Button onClick={handleCloseModal}>Tamam</Button>
+            </div>
+          </div>
+        ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Ad" name="ad" value={formData.ad} onChange={handleInputChange} required />
@@ -378,6 +389,61 @@ export default function YonetimKuruluPage() {
 
           <Input label="Adres" name="adres" value={formData.adres} onChange={handleInputChange} />
 
+          {!editingUye ? (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Sistem Şifresi *</label>
+              <div className="relative">
+                <input
+                  type={showSifre ? 'text' : 'password'}
+                  name="sifre"
+                  value={formData.sifre}
+                  onChange={handleInputChange}
+                  required
+                  minLength={6}
+                  placeholder="En az 6 karakter"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 pr-10 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                />
+                <button type="button" onClick={() => setShowSifre(!showSifre)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  {showSifre ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Kullanıcı adı otomatik oluşturulacak (İlk harf + Soyad)</p>
+            </div>
+          ) : editingUye?.admin && (
+            <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-4 space-y-3">
+              <div className="flex items-center gap-2 mb-1">
+                <User className="h-4 w-4 text-gray-500" />
+                <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Sistem Hesabı</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-gray-500">Kullanıcı Adı:</span>
+                <span className="font-mono font-bold text-gray-900 dark:text-white">{editingUye.admin.username}</span>
+                <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${editingUye.admin.active ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'}`}>
+                  {editingUye.admin.active ? 'Aktif' : 'Pasif'}
+                </span>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Yeni Şifre (boş bırakırsanız değişmez)</label>
+                <div className="relative">
+                  <input
+                    type={showSifre ? 'text' : 'password'}
+                    name="yeniSifre"
+                    value={formData.yeniSifre || ''}
+                    onChange={handleInputChange}
+                    minLength={6}
+                    placeholder="••••••"
+                    className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 pr-10 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                  />
+                  <button type="button" onClick={() => setShowSifre(!showSifre)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showSifre ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Sorumlu Mahalleler
@@ -416,6 +482,7 @@ export default function YonetimKuruluPage() {
             <Button type="submit">{editingUye ? 'Güncelle' : 'Kaydet'}</Button>
           </div>
         </form>
+        )}
       </Modal>
     </>
   );

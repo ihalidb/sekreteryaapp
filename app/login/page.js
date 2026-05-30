@@ -74,7 +74,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-accent-50 via-white to-brand-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
       <div className="max-w-md w-full space-y-8">
         {/* Logo ve Başlık */}
         <div className="text-center">
@@ -86,16 +86,16 @@ const LoginPage = () => {
             priority
             className="justify-center mx-auto drop-shadow-md"
           />
-          <h2 className="mt-5 text-xl font-bold text-accent-700">
+          <h2 className="mt-5 text-xl font-bold text-accent-600 dark:text-accent-400">
             Fatih İlçe Teşkilatı
           </h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Sekreterya — Admin Paneline Giriş
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white py-8 px-6 shadow-2xl rounded-2xl border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 py-8 px-6 shadow-2xl rounded-2xl border border-gray-100 dark:border-gray-700">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Error Message */}
             {error && (
@@ -125,7 +125,7 @@ const LoginPage = () => {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Kullanıcı Adı
               </label>
@@ -137,7 +137,7 @@ const LoginPage = () => {
                 required
                 value={formData.username}
                 onChange={handleChange}
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all hover:border-gray-400"
                 placeholder="Kullanıcı adınızı girin"
                 disabled={loading}
               />
@@ -147,7 +147,7 @@ const LoginPage = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Şifre
               </label>
@@ -159,7 +159,7 @@ const LoginPage = () => {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all hover:border-gray-400"
                 placeholder="Şifrenizi girin"
                 disabled={loading}
               />
@@ -170,7 +170,7 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-accent-600 to-brand-500 hover:from-accent-700 hover:to-brand-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-accent-600 hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <div className="flex items-center">

@@ -6,15 +6,19 @@ import crypto from 'crypto';
 
 export const POST = async (request) => {
   try {
-    const { username, password } = await request.json();
+    const { username: rawUsername, password } = await request.json();
 
     // Input validation
-    if (!username || !password) {
+    if (!rawUsername || !password) {
       return NextResponse.json(
         { error: 'Kullanıcı adı ve şifre gereklidir' },
         { status: 400 }
       );
     }
+
+    // Türkçe karakterleri İngilizce karşılıklarına çevirerek büyük harfe normalize et
+    const trMap = { 'ç':'C','Ç':'C','ğ':'G','Ğ':'G','ı':'I','İ':'I','i':'I','I':'I','ö':'O','Ö':'O','ş':'S','Ş':'S','ü':'U','Ü':'U' };
+    const username = rawUsername.trim().split('').map(c => trMap[c] || c.toUpperCase()).join('');
 
     // Admin kullanıcıyı bul
     const admin = await prisma.admin.findUnique({

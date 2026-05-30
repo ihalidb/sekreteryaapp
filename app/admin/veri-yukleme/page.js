@@ -133,7 +133,7 @@ const VeriYuklemePage = () => {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           Excel ile Veri Yükleme
         </h1>
         <p className="text-gray-600">
@@ -161,7 +161,7 @@ const VeriYuklemePage = () => {
         {dataTypes.map((type) => (
           <div
             key={type.id}
-            className={`bg-white border-2 rounded-xl p-6 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+            className={`bg-white dark:bg-gray-800 border-2 dark:border-gray-700 rounded-xl p-6 cursor-pointer transition-all duration-200 hover:shadow-lg ${
               selectedType === type.id
                 ? 'border-accent-600 shadow-lg'
                 : 'border-gray-200 hover:border-accent-300'
@@ -182,7 +182,7 @@ const VeriYuklemePage = () => {
               </button>
             </div>
             
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               {type.name}
             </h3>
             
@@ -206,10 +206,10 @@ const VeriYuklemePage = () => {
 
       {/* Upload Section */}
       {selectedType && (
-        <div className="bg-white border border-gray-200 rounded-xl p-8 mb-6">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 mb-6">
           <div className="flex items-center mb-6">
             <FileSpreadsheet className="h-6 w-6 text-accent-600 mr-3" />
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
               {dataTypes.find(t => t.id === selectedType)?.name} Yükleme
             </h2>
           </div>
@@ -228,7 +228,7 @@ const VeriYuklemePage = () => {
                 type="file"
                 accept=".xlsx,.xls"
                 onChange={handleFileChange}
-                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-600 file:text-white hover:file:bg-accent-700 file:cursor-pointer"
+                className="block w-full text-sm text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-accent-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-600 file:text-white hover:file:bg-accent-700 file:cursor-pointer"
               />
             </div>
             {file && (
@@ -244,7 +244,7 @@ const VeriYuklemePage = () => {
             <button
               onClick={handleUpload}
               disabled={!file || uploading}
-              className="flex items-center px-6 py-3 bg-gradient-to-r from-accent-600 to-brand-500 text-white font-semibold rounded-lg hover:from-accent-700 hover:to-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="flex items-center px-6 py-3 bg-accent-600 text-white font-semibold rounded-lg hover:bg-accent-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               <Upload className="h-5 w-5 mr-2" />
               {uploading ? 'Yükleniyor...' : 'Yükle'}
@@ -252,7 +252,7 @@ const VeriYuklemePage = () => {
 
             <button
               onClick={() => handleDownloadTemplate(selectedType)}
-              className="flex items-center px-6 py-3 bg-white border-2 border-accent-600 text-accent-600 font-semibold rounded-lg hover:bg-accent-50 transition-colors duration-200"
+              className="flex items-center px-6 py-3 bg-white dark:bg-gray-700 border-2 border-accent-600 dark:border-accent-500 text-accent-600 dark:text-accent-400 font-semibold rounded-lg hover:bg-accent-50 dark:hover:bg-gray-600 transition-colors duration-200"
             >
               <Download className="h-5 w-5 mr-2" />
               Şablon İndir
@@ -293,7 +293,7 @@ const VeriYuklemePage = () => {
               </p>
 
               {result.details && (
-                <div className="mt-4 bg-white rounded-lg p-4 border border-gray-200">
+                <div className="mt-4 bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                   <div className="grid grid-cols-2 gap-4 mb-3">
                     <div>
                       <p className="text-sm text-gray-600">Başarılı</p>

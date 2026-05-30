@@ -149,7 +149,7 @@ export default function KomisyonDetayPage({ params }) {
             </p>
           </div>
           <div className="px-4 py-2 bg-accent-50 dark:bg-accent-900/20 rounded-lg">
-            <p className="text-xs text-accent-700 dark:text-accent-400">
+            <p className="text-xs text-accent-700 dark:text-accent-300 dark:text-accent-400">
               ℹ️ Üye yönetimi devre dışı
             </p>
           </div>

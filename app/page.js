@@ -29,7 +29,7 @@ export default function Home() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-accent-50 via-white to-brand-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="text-center">
         <AppLogo
           asLink={false}
